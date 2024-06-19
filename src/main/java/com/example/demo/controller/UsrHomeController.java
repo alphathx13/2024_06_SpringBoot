@@ -10,7 +10,7 @@ public class UsrHomeController {
 	@GetMapping("/usr/home/main")
 	@ResponseBody
 	public String showMain() {
-		return "Hello World!!";
+		return null;
 	}
-	
+
 }
