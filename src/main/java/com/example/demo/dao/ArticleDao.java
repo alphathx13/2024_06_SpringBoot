@@ -3,6 +3,7 @@ package com.example.demo.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -12,7 +13,14 @@ import com.example.demo.vo.Article;
 @Mapper
 public interface ArticleDao {
 
-	public Article articleWrite(String title, String body);
+	@Insert("""
+			insert into article
+				set regDate = now()
+					, updateDate = now()
+					, title = #{title}
+					, body = #{body}
+			""")
+	public void articleWrite(String title, String body);
 	
 	@Select("""
 			select * 
@@ -29,11 +37,17 @@ public interface ArticleDao {
 	public Article getArticleById(int id);
 	
 	@Update("""
+			<script>
 			update article 
 				set updateDate = NOW()
+					<if test = "title != null and title != ''">
 					, title = #{title}
-					, body = #{body} 
+					</if>
+					<if test = "body != null and body != ''">
+					, body = #{body}
+					</if>
 					where id = #{id}
+			</script>
 			""")
 	public void articleModify(int id, String title, String body);
 	
@@ -42,4 +56,7 @@ public interface ArticleDao {
 				where id = #{id}
 			""")
 	public void articleDelete(int id);
+
+	@Select("SELECT last_insert_id()")
+	public int getLastInsertId();
 }

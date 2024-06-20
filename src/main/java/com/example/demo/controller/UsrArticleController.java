@@ -21,7 +21,11 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/doWrite")
 	@ResponseBody
 	public Article doWrite(String title, String body) {
-		return articleService.articleWrite(title, body);
+		articleService.articleWrite(title, body);
+
+		int lastInsertId = articleService.getLastInsertId();
+		
+		return articleService.getArticleById(lastInsertId);
 	}
 
 	@GetMapping("/usr/article/showList")
