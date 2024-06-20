@@ -11,7 +11,7 @@ import com.example.demo.service.ArticleService;
 
 @Controller
 public class UsrArticleController {
-	
+
 	private ArticleService articleService;
 
 	public UsrArticleController(ArticleService articleService) {
@@ -33,19 +33,43 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/showDetail")
 	@ResponseBody
 	public Object showDetail(int id) {
-		return articleService.articleDetail(id);
+		Article foundArticle = articleService.getArticleById(id);
+		
+		if (foundArticle == null) {
+			return id + "번 게시물은 존재하지 않습니다";
+		}
+		
+		return foundArticle;
 	}
 
 	@GetMapping("/usr/article/doModify")
 	@ResponseBody
 	public String modify(int id, String title, String body) {
-		return articleService.articleModify(id, title, body);
+		
+		Article foundArticle = articleService.getArticleById(id);
+		
+		if (foundArticle == null) {
+			return id + "번 게시물은 존재하지 않습니다";
+		}
+		
+		articleService.articleModify(id, title, body);
+		
+		return id + "번 게시물을 수정하였습니다.";
 	}
 		
 	@GetMapping("/usr/article/doDelete")
 	@ResponseBody
 	public String doDelete(int id) {
-		return articleService.articleDelete(id);
+		
+		Article foundArticle = articleService.getArticleById(id);
+		
+		if (foundArticle == null) {
+			return id + "번 게시물은 존재하지 않습니다";
+		}
+		
+		articleService.articleDelete(id);
+		
+		return id + "번 게시물을 삭제하였습니다.";
 	}
 
 }

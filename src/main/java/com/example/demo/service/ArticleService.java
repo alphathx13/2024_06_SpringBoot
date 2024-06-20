@@ -24,16 +24,16 @@ public class ArticleService {
 		return articleDao.articleList();
 	}
 	
-	public Object articleDetail(int id) {
-		return articleDao.articleDetail(id);
+	public Article getArticleById(int id) {
+		return articleDao.getArticleById(id);
 	}
 	
-	public String articleModify(int id, String title, String body) {
-		return articleDao.articleModify(id, title, body);
+	public void articleModify(int id, String title, String body) {
+		articleDao.articleModify(id, title, body);
 	}
 	
-	public String articleDelete(int id) {
-		return articleDao.articleDelete(id);
+	public void articleDelete(int id) {
+		articleDao.articleDelete(id);
 	}
 	
 }
