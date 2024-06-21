@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,6 +8,8 @@ import com.example.demo.service.MemberService;
 import com.example.demo.util.Util;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class UsrMemberController {
@@ -22,7 +22,7 @@ public class UsrMemberController {
 	
 	@GetMapping("/usr/member/doJoin")
 	@ResponseBody
-	public ResultData doJoin(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
+	public ResultData<Member> join(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
 		if (Util.isEmpty(loginId)) {
 			return ResultData.from("F-1", "아이디는 필수입력 정보입니다.");
 		} else if (Util.isEmpty(loginPw)) {
@@ -50,6 +50,48 @@ public class UsrMemberController {
 		return ResultData.from("S-1", String.format("회원가입을 환영합니다."), memberService.getMemberById(id));
 	}
 
+	@GetMapping("/usr/member/doLogin")
+	@ResponseBody
+	public ResultData login(HttpSession session, String loginId, String loginPw) {
+		
+		if(session.getAttribute("loginMemberNumber") != null) {
+			return ResultData.from("L-1", "로그아웃하고 사용해주세요.");
+		}
+		
+		if(Util.isEmpty(loginId))
+			return ResultData.from("F-1", "제목을 입력해주세요.");
+		
+		if(Util.isEmpty(loginPw))
+			return ResultData.from("F-2", "내용을 입력해주세요.");
+		
+		Member member = memberService.getMemberByLoginId(loginId);
+		
+		System.out.println(memberService.getMemberByLoginId(loginId));
+		
+		if (member == null)
+			return ResultData.from("F-3", String.format("%s 아이디는 존재하지 않습니다.", loginId));
+		
+		if (!member.getLoginPw().equals(loginPw))
+			return ResultData.from("F-4", "비밀번호가 일치하지 않습니다.");
+		
+		session.setAttribute("loginMemberNumber", member.getId());
+		
+		return ResultData.from("S-1", String.format("%s 님 환영합니다.", member.getNickname()));
+	}
+	
+	@GetMapping("/usr/member/doLogout")
+	@ResponseBody
+	public ResultData logout(HttpSession session, String loginId, String loginPw) {
+	
+		if(session.getAttribute("loginMemberNumber") == null) {
+			return ResultData.from("L-1", "로그인 후 사용해주세요.");
+		}
+		
+		session.removeAttribute("loginMemberNumber");
+		
+		return ResultData.from("S-1", String.format("정상적으로 로그아웃되었습니다."));
+	}
+	
 //	@GetMapping("/usr/member/memberList")
 //	@ResponseBody
 //	public List<Member> showList() {
@@ -57,43 +99,3 @@ public class UsrMemberController {
 //	}
 
 }
-
-//@Component
-//class Test1 {
-//	
-//	@Autowired
-//	private Test2 test2;
-//	
-//	public void test1() {
-//		test2.test2();
-//	}
-//}
-//
-//@Component
-//class Test2 {
-//	
-//	@Autowired
-//	private Test1 test1;
-//	
-//	public void test2() {
-//		test1.test1();
-//	}
-//}
-//
-//@Component
-//class BeanA {
-//	private BeanB beanB;
-//
-//	public BeanA(BeanB beanB){
-//		this.beanB = beanB;
-//	}
-//}
-//
-//@Component
-//class BeanB {
-//	private BeanA beanA;
-//
-//	public BeanB(BeanA beanA){
-//		this.beanA = beanA;
-//	}
-//}

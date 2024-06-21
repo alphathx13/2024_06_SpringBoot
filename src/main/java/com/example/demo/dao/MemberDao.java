@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.example.demo.vo.Member;
+import com.example.demo.vo.ResultData;
 
 @Mapper
 public interface MemberDao {
@@ -25,13 +26,6 @@ public interface MemberDao {
 	public void memberJoin(String loginId, String loginPw, String name, String nickname, String cellphone, String email);
 
 	@Select("""
-			select * 
-				from `member`
-				order by id desc
-			""")
-	public List<Member> memberList();
-
-	@Select("""
 			SELECT *
 				FROM `member`
 				WHERE id = #{id}
@@ -41,7 +35,7 @@ public interface MemberDao {
 	@Select("""
 			select * 
 				from `member` 
-				where id = #{id}
+				where loginId = #{id}
 			""")
 	public Member getMemberByLoginId(String loginId);
 
