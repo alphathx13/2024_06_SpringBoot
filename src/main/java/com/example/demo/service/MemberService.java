@@ -17,34 +17,22 @@ public class MemberService {
 	}
 
 
-	public String memberJoin(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
-		
-		if (this.idDupCheck(loginId) == true) {
-			return "입력하신 [" + loginId + "] 아이디는 이미 사용중입니다.";
-		}
-		
+	public void memberJoin(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
 		memberDao.memberJoin(loginId, loginPw, name, nickname, cellphone, email);
-		
-		return loginId + "님의 회원가입을 환영합니다.";
 	}
 	
-	public boolean idDupCheck(String loginId) {
-		Member foundMember = memberDao.idDupCheck(loginId);
-		
-		if (foundMember != null) 
-			return true;
-		
-		return false;
-	}
-	
-	public Member getMemberById(int lastInsertId) {
-		return memberDao.getMemberById(lastInsertId);
+	public Member getMemberByLoginId(String loginId) {
+		return memberDao.getMemberByLoginId(loginId);
 	}
 
 	public List<Member> memberList() {
 		return memberDao.memberList();
 	}
 	
+	public Object getMemberById(int id) {
+		return this.memberDao.getMemberById(id);
+	}
+
 	public int getLastInsertId() {
 		return memberDao.getLastInsertId();
 	}

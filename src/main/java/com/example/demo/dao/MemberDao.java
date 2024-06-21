@@ -32,17 +32,18 @@ public interface MemberDao {
 	public List<Member> memberList();
 
 	@Select("""
-			SELECT * FROM `member`
-			 	WHERE loginId = #{loginId}
+			SELECT *
+				FROM `member`
+				WHERE id = #{id}
 			""")
-	public Member idDupCheck(String loginId);
-
+	public Member getMemberById(int id);
+	
 	@Select("""
 			select * 
 				from `member` 
 				where id = #{id}
 			""")
-	public Member getMemberById(int lastInsertId);
+	public Member getMemberByLoginId(String loginId);
 
 	@Select("SELECT last_insert_id()")
 	public int getLastInsertId();
