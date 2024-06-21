@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.vo.Article;
 import com.example.demo.vo.ResultData;
+
+import jakarta.servlet.http.HttpSession;
+
 import com.example.demo.service.ArticleService;
 import com.example.demo.util.Util;
 
@@ -22,7 +25,10 @@ public class UsrArticleController {
 	
 	@GetMapping("/usr/article/doWrite")
 	@ResponseBody
-	public ResultData<Article> doWrite(String title, String body) {
+	public ResultData<Article> doWrite(HttpSession session, String title, String body) {
+		
+		if(session.getAttribute("loginMemberNumber") == null)
+			return ResultData.from("L-1", "로그인 후 사용해주세요.");
 		
 		if(Util.isEmpty(title))
 			return ResultData.from("F-1", "제목을 입력해주세요.");
@@ -30,7 +36,7 @@ public class UsrArticleController {
 		if(Util.isEmpty(body))
 			return ResultData.from("F-2", "내용을 입력해주세요.");
 		
-		articleService.articleWrite(title, body);
+		articleService.articleWrite(title, body, (int) session.getAttribute("loginMemberNumber"));
 
 		int id = articleService.getLastInsertId();
 		
@@ -52,7 +58,7 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/showDetail")
 	@ResponseBody
 	public ResultData<Article> showDetail(int id) {
-		Article foundArticle = articleService.getArticleById(id);
+		Article foundArticle = articleService.forPrintArticle(id);
 		
 		if (foundArticle == null) {
 			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
@@ -63,13 +69,16 @@ public class UsrArticleController {
 
 	@GetMapping("/usr/article/doModify")
 	@ResponseBody
-	public ResultData modify(int id, String title, String body) {
+	public ResultData modify(HttpSession session, int id, String title, String body) {
 		
 		Article foundArticle = articleService.getArticleById(id);
 		
 		if (foundArticle == null) {
 			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
 		}
+
+		if((int) session.getAttribute("loginMemberNumber") != foundArticle.getMemberNumber())
+			return ResultData.from("F-A", "글 수정은 작성자만 할 수 있습니다.");
 		
 		articleService.articleModify(id, title, body);
 		
@@ -78,13 +87,16 @@ public class UsrArticleController {
 		
 	@GetMapping("/usr/article/doDelete")
 	@ResponseBody
-	public ResultData doDelete(int id) {
+	public ResultData doDelete(HttpSession session, int id) {
 		
 		Article foundArticle = articleService.getArticleById(id);
 		
 		if (foundArticle == null) {
 			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
 		}
+		
+		if((int) session.getAttribute("loginMemberNumber") != foundArticle.getMemberNumber())
+			return ResultData.from("F-A", "글 삭제는 작성자만 할 수 있습니다.");
 		
 		articleService.articleDelete(id);
 		

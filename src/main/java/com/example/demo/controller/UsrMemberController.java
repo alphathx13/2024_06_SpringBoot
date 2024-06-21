@@ -66,8 +66,6 @@ public class UsrMemberController {
 		
 		Member member = memberService.getMemberByLoginId(loginId);
 		
-		System.out.println(memberService.getMemberByLoginId(loginId));
-		
 		if (member == null)
 			return ResultData.from("F-3", String.format("%s 아이디는 존재하지 않습니다.", loginId));
 		
