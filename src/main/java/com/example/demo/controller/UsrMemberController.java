@@ -23,25 +23,23 @@ public class UsrMemberController {
 	@GetMapping("/usr/member/doJoin")
 	@ResponseBody
 	public ResultData<Member> join(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
-		if (Util.isEmpty(loginId)) {
+		if (Util.isEmpty(loginId))
 			return ResultData.from("F-1", "아이디는 필수입력 정보입니다.");
-		} else if (Util.isEmpty(loginPw)) {
+		if (Util.isEmpty(loginPw)) 
 			return ResultData.from("F-2", "비밀번호는 필수입력 정보입니다.");
-		} else if (Util.isEmpty(name)) {
+		if (Util.isEmpty(name)) 
 			return ResultData.from("F-3", "이름은 필수입력 정보입니다.");
-		} else if (Util.isEmpty(nickname)) {
+		if (Util.isEmpty(nickname)) 
 			return ResultData.from("F-4", "닉네임은 필수입력 정보입니다.");
-		} else if (Util.isEmpty(cellphone)) {
+		if (Util.isEmpty(cellphone)) 
 			return ResultData.from("F-5", "핸드폰 번호는 필수입력 정보입니다.");
-		} else if (Util.isEmpty(email)) {
+		if (Util.isEmpty(email)) 
 			return ResultData.from("F-6", "이메일은 필수입력 정보입니다.");
-		}
 		
 		Member member = memberService.getMemberByLoginId(loginId);
 		
-		if (member != null) {
+		if (member != null) 
 			return ResultData.from("F-7", String.format("입력하신 [ %s ] 아이디는 이미 사용중입니다.", loginId));
-		}
 		
 		memberService.memberJoin(loginId, loginPw, name, nickname, cellphone, email);
 
@@ -54,9 +52,8 @@ public class UsrMemberController {
 	@ResponseBody
 	public ResultData login(HttpSession session, String loginId, String loginPw) {
 		
-		if(session.getAttribute("loginMemberNumber") != null) {
+		if(session.getAttribute("loginMemberNumber") != null) 
 			return ResultData.from("L-1", "로그아웃하고 사용해주세요.");
-		}
 		
 		if(Util.isEmpty(loginId))
 			return ResultData.from("F-1", "제목을 입력해주세요.");
@@ -81,19 +78,12 @@ public class UsrMemberController {
 	@ResponseBody
 	public ResultData logout(HttpSession session, String loginId, String loginPw) {
 	
-		if(session.getAttribute("loginMemberNumber") == null) {
+		if(session.getAttribute("loginMemberNumber") == null) 
 			return ResultData.from("L-1", "로그인 후 사용해주세요.");
-		}
 		
 		session.removeAttribute("loginMemberNumber");
 		
 		return ResultData.from("S-1", String.format("정상적으로 로그아웃되었습니다."));
 	}
-	
-//	@GetMapping("/usr/member/memberList")
-//	@ResponseBody
-//	public List<Member> showList() {
-//		return memberService.memberList();
-//	}
 
 }

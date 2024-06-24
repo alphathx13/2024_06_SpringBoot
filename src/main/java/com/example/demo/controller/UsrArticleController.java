@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -43,16 +44,14 @@ public class UsrArticleController {
 		return ResultData.from("S-1", String.format("%d번 게시글을 작성했습니다.", id), articleService.getArticleById(id));
 	}
 
-	@GetMapping("/usr/article/showList")
-	@ResponseBody
-	public ResultData<List<Article>> showList() {
+	@GetMapping("/usr/article/list")
+	public String list(Model model) {
 		
 		List<Article> articles = articleService.articleList();
 		
-		if (articles.size() == 0)
-			return ResultData.from("F-1", "게시물이 존재하지 않습니다.");
+		model.addAttribute("articles", articles);
 		
-		return ResultData.from("S-1", "게시물 목록", articles);
+		return "usr/article/list";
 	}
 
 	@GetMapping("/usr/article/showDetail")
@@ -60,9 +59,8 @@ public class UsrArticleController {
 	public ResultData<Article> showDetail(int id) {
 		Article foundArticle = articleService.forPrintArticle(id);
 		
-		if (foundArticle == null) {
+		if (foundArticle == null) 
 			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
-		}
 		
 		return ResultData.from("S-1", "게시물 상세정보", foundArticle);
 	}
@@ -73,9 +71,8 @@ public class UsrArticleController {
 		
 		Article foundArticle = articleService.getArticleById(id);
 		
-		if (foundArticle == null) {
+		if (foundArticle == null) 
 			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
-		}
 
 		if((int) session.getAttribute("loginMemberNumber") != foundArticle.getMemberNumber())
 			return ResultData.from("F-A", "글 수정은 작성자만 할 수 있습니다.");
@@ -91,9 +88,8 @@ public class UsrArticleController {
 		
 		Article foundArticle = articleService.getArticleById(id);
 		
-		if (foundArticle == null) {
+		if (foundArticle == null) 
 			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
-		}
 		
 		if((int) session.getAttribute("loginMemberNumber") != foundArticle.getMemberNumber())
 			return ResultData.from("F-A", "글 삭제는 작성자만 할 수 있습니다.");
