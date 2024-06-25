@@ -6,7 +6,7 @@
 
 <%@ include file="../../common/head.jsp"%>
 
-<section>
+<section class ="m-10">
 	<div>
 		<div class="table-box-type">
 			<table class="w-3/5 text-center">
@@ -39,20 +39,19 @@
 	</div>
 
 	<div class="btns text-3xl mt-3">
-		<button onclick="history.back();">
+		<button class = "back" onclick="history.back();">
 			<i class="fa-solid fa-arrow-left-long"></i>
+			<div class="tip">
+        		<p> 뒤로 가기 </p>
+    		</div>
 		</button>
-
-		<c:if
-			test="${article.memberNumber == sessionScope.loginMemberNumber }">
-			<a href="modify?id=${article.id }"><i class="fa-solid fa-pen"></i></a>
-			<button type="button" onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='delete?id=${article.id }">
+		<c:if test="${article.memberNumber == sessionScope.loginMemberNumber }">
+			<button type="button" onclick="location.href='modify?id=${article.id }'"><i class="fa-solid fa-pen"></i></button>
+			<button type="button" onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }'">
 				<i class="fa-solid fa-trash"></i>
 			</button>
 		</c:if>
 	</div>
 </section>
-
-
 
 <%@ include file="../../common/foot.jsp"%>

@@ -7,13 +7,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.demo.vo.Article;
-import com.example.demo.vo.ResultData;
-
-import jakarta.servlet.http.HttpSession;
-
 import com.example.demo.service.ArticleService;
 import com.example.demo.util.Util;
+import com.example.demo.vo.Article;
+import com.example.demo.vo.ResultData;
+import com.example.demo.vo.Rq;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class UsrArticleController {
@@ -55,11 +56,15 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/detail")
-	public String detail(Model model, int id) {
-		Article foundArticle = articleService.forPrintArticle(id);
+	public String showDetail(HttpServletRequest req, Model model, int id) {
 		
-		model.addAttribute("article", foundArticle);
-
+		Rq rq = (Rq) req.getAttribute("rq");
+		
+		Article article = articleService.forPrintArticle(id);
+		
+		model.addAttribute("article", article);
+		model.addAttribute("loginMemberNumber", rq.getLoginMemberNumber());
+		
 		return "usr/article/detail";
 	}
 
@@ -82,19 +87,11 @@ public class UsrArticleController {
 		
 	@GetMapping("/usr/article/doDelete")
 	@ResponseBody
-	public ResultData doDelete(HttpSession session, int id) {
-		
-		Article foundArticle = articleService.getArticleById(id);
-		
-		if (foundArticle == null) 
-			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
-		
-		if((int) session.getAttribute("loginMemberNumber") != foundArticle.getMemberNumber())
-			return ResultData.from("F-A", "글 삭제는 작성자만 할 수 있습니다.");
+	public String doDelete(int id) {
 		
 		articleService.articleDelete(id);
 		
-		return ResultData.from("S-1", String.format("%d번 게시글을 삭제하였습니다.", id));
+		return Util.jsReplace(String.format("%d번 게시글을 삭제했습니다.", id), "list");
 	}
 
 }

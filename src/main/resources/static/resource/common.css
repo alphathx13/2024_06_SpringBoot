@@ -27,3 +27,31 @@ html > body {
 	border-radius: 7px;
 	padding: 5px;
 }
+
+.tip {
+	padding: 15px 20px;
+    background-color: #444444;
+    border-radius: 5px;
+    color: #ffffff;
+	display : none;
+}
+
+.back:hover > .tip{
+	display : block;
+}
+
+.tip{
+    position: absolute;
+    top: 8px;
+    left: 55px;
+
+    font-size: 14px;
+    line-height: 26px;
+    text-align: center;
+
+    background-color: #b3dfe6;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: default;
+}

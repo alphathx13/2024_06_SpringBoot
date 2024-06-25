@@ -6,7 +6,7 @@
     
 <%@ include file="../../common/head.jsp" %>      
 	
-	<section>
+	<section class = "m-10">
 		<div>
 			<div class="table-box-type">
 				<table class = "w-3/5 text-center">
