@@ -54,15 +54,13 @@ public class UsrArticleController {
 		return "usr/article/list";
 	}
 
-	@GetMapping("/usr/article/showDetail")
-	@ResponseBody
-	public ResultData<Article> showDetail(int id) {
+	@GetMapping("/usr/article/detail")
+	public String detail(Model model, int id) {
 		Article foundArticle = articleService.forPrintArticle(id);
 		
-		if (foundArticle == null) 
-			return ResultData.from("F-1", String.format("%d번 게시글은 존재하지 않습니다.", id));
-		
-		return ResultData.from("S-1", "게시물 상세정보", foundArticle);
+		model.addAttribute("article", foundArticle);
+
+		return "usr/article/detail";
 	}
 
 	@GetMapping("/usr/article/doModify")

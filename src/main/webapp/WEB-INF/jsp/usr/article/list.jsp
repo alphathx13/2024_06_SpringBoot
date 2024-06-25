@@ -20,8 +20,8 @@
 						<tr class = "border-collapse border-2 bg-orange-300">
 							<th>글 번호</th>
 							<th>글 제목</th>
-							<th>수정일시</th>
 							<th>작성자</th>
+							<th>수정일시</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -30,7 +30,7 @@
 								<td>${article.id } </td>
 								<td class="hover:underline"><a href="detail?id=${article.id }">${article.title } </a></td>
 								<td>${article.writerName }</td>
-								<td>${article.updateDate }</td>
+								<td>${article.updateDate.substring(2, 16) }</td>
 							</tr>
 						</c:forEach>
 					</tbody>

@@ -11,3 +11,19 @@ html > body {
 	font-family: 'ONE-Mobile-POP';
 	text-underline-position: under;
 }
+
+.btns > button, .btns > a {
+	border : 1px solid black;
+	border-radius: 7px;
+	padding: 5px;
+	width: 50px;
+	height: 50px;
+}
+
+.btns > button:hover, .btns > a:hover {
+	border : 1px solid black;
+	background-color: black;
+	color : white;
+	border-radius: 7px;
+	padding: 5px;
+}

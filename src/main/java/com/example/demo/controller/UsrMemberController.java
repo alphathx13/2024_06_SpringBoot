@@ -70,6 +70,7 @@ public class UsrMemberController {
 			return ResultData.from("F-4", "비밀번호가 일치하지 않습니다.");
 		
 		session.setAttribute("loginMemberNumber", member.getId());
+		session.setAttribute("loginMemberNn", member.getNickname());
 		
 		return ResultData.from("S-1", String.format("%s 님 환영합니다.", member.getNickname()));
 	}
@@ -82,6 +83,7 @@ public class UsrMemberController {
 			return ResultData.from("L-1", "로그인 후 사용해주세요.");
 		
 		session.removeAttribute("loginMemberNumber");
+		session.removeAttribute("loginMemberNn");
 		
 		return ResultData.from("S-1", String.format("정상적으로 로그아웃되었습니다."));
 	}
