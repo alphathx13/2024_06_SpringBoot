@@ -1,6 +1,11 @@
 package com.example.demo.vo;
 
+import java.io.IOException;
+
+import com.example.demo.util.Util;
+
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 
@@ -8,15 +13,48 @@ public class Rq {
 
 	@Getter
 	private int loginMemberNumber;
+	@Getter
+	private String loginMemberNn;
+	private HttpServletResponse response;
+	private HttpSession session;
 
-	public Rq(HttpServletRequest req) {
-		HttpSession session = req.getSession();
+	public Rq(HttpServletRequest request, HttpServletResponse response) {
+		
+		this.response = response;
+		this.session = request.getSession();
 
 		int loginMemberNumber = 0;
+		String loginMemberNn = "";
 
-		if (session.getAttribute("loginedMemberId") != null) {
-			loginMemberNumber = (int) session.getAttribute("loginedMemberId");
+		if (session.getAttribute("loginMemberNumber") != null) {
+			loginMemberNumber = (int) session.getAttribute("loginMemberNumber");
+			loginMemberNn = (String) session.getAttribute("loginMemberNn");
 		}
+		
+		this.loginMemberNumber = loginMemberNumber;
+		this.loginMemberNn = loginMemberNn;
 
+	}
+	
+	public void jsReplace(String msg, String uri) {
+		response.setContentType("text/html; charset=UTF-8");
+		
+		try {
+			response.getWriter().append(Util.jsReplace(msg, uri));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// response를 servlet이 아닌 다른곳에서 사용하려고 하면 예외처리가 필요
+	}
+
+	public void login(Member member) {
+		session.setAttribute("loginMemberNumber", member.getId());
+		session.setAttribute("loginMemberNn", member.getNickname());
+	}
+
+	public void logout() {
+		this.session.removeAttribute("loginMemberNumber");
+		this.session.removeAttribute("loginMemberNn");
+		
 	}
 }

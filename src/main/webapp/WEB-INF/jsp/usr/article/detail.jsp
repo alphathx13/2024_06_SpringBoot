@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<c:set var="pageTitle" value="Article Detail" />
+<c:set var="pageTitle" value="게시글 보기" />
 
 <%@ include file="../../common/head.jsp"%>
 
@@ -45,7 +45,7 @@
         		<p> 뒤로 가기 </p>
     		</div>
 		</button>
-		<c:if test="${article.memberNumber == sessionScope.loginMemberNumber }">
+		<c:if test="${loginMemberNumber == article.memberNumber }">
 			<button type="button" onclick="location.href='modify?id=${article.id }'"><i class="fa-solid fa-pen"></i></button>
 			<button type="button" onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }'">
 				<i class="fa-solid fa-trash"></i>
