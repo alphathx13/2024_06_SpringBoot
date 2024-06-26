@@ -6,7 +6,7 @@
 
 <%@ include file="../../common/head.jsp"%>
 
-<section class ="m-10">
+<section class="m-10">
 	<div>
 		<div class="table-box-type">
 			<table class="w-3/5 text-center">
@@ -37,19 +37,26 @@
 			</table>
 		</div>
 	</div>
-
-	<div class="btns text-3xl mt-3">
-		<button class = "back" onclick="history.back();">
-			<i class="fa-solid fa-arrow-left-long"></i>
-			<div class="tip">
-        		<p> 뒤로 가기 </p>
-    		</div>
-		</button>
+	
+	<div class="text-4xl mt-4">
+		<div class="tooltip" data-tip="뒤로 가기">
+			<button class="btn btn-outline btn-info" onclick="history.back();">			
+				<i class="fa-solid fa-arrow-left-long"></i>
+			</button>
+		</div>
 		<c:if test="${loginMemberNumber == article.memberNumber }">
-			<button type="button" onclick="location.href='modify?id=${article.id }'"><i class="fa-solid fa-pen"></i></button>
-			<button type="button" onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }'">
+			<div class="tooltip" data-tip="글 수정">
+			<button class="btn btn-outline btn-info" type="button"
+				onclick="location.href='modify?id=${article.id }'">
+				<i class="fa-solid fa-pen"></i>
+			</button>
+			</div>
+			<div class="tooltip" data-tip="글 삭제">
+			<button class="btn btn-outline btn-info" type="button"
+				onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }'">
 				<i class="fa-solid fa-trash"></i>
 			</button>
+			</div>
 		</c:if>
 	</div>
 </section>

@@ -21,7 +21,7 @@
 							<th>글 번호</th>
 							<th>글 제목</th>
 							<th>작성자</th>
-							<th>수정일시</th>
+							<th>작성일</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -30,7 +30,7 @@
 								<td>${article.id } </td>
 								<td class="hover:underline"><a href="detail?id=${article.id }">${article.title } </a></td>
 								<td>${article.writerName }</td>
-								<td>${article.updateDate.substring(2, 16) }</td>
+								<td>${article.regDate.substring(2, 16) }</td>
 							</tr>
 						</c:forEach>
 					</tbody>
@@ -38,5 +38,16 @@
 			</div>
 		</div>
 	</section>
+	
+	<div class = "ml-4">
+		<c:if test="${rq.loginMemberNumber != 0 }">
+			<div class="tooltip" data-tip="글 작성">
+				<button class="btn btn-outline btn-info" type="button"
+					onclick="location.href='write'">
+					<i class="fa-solid fa-pen"></i>
+				</button>
+			</div>
+		</c:if>
+	</div>
 
 <%@ include file="../../common/foot.jsp" %>  
