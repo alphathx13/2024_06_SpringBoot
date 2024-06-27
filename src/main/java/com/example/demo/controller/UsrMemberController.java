@@ -65,7 +65,7 @@ public class UsrMemberController {
 		Member member = memberService.getMemberByLoginId(id);
 		
 		if (member == null) { 
-			return Util.jsBack(String.format("입력하신 [ %s ]는 존재하지 않습니다.", id));
+			return Util.jsBack(String.format("[ %s ] 계정은 존재하지 않습니다.", id));
 		}
 		
 		if (!member.getLoginPw().equals(pw)) { 
@@ -77,7 +77,7 @@ public class UsrMemberController {
 		return Util.jsReplace(String.format("%s 님의 로그인을 환영합니다.", member.getNickname()), "/");
 	}
 	
-	@GetMapping("/usr/member/doLogout")
+	@GetMapping("/usr/member/logout")
 	@ResponseBody
 	public String logout(HttpSession session, HttpServletRequest request, String loginId, String loginPw) {
 	
@@ -86,6 +86,11 @@ public class UsrMemberController {
 		rq.logout();
 		
 		return Util.jsReplace("정상적으로 로그아웃 되었습니다.", "/");
+	}
+	
+	@GetMapping("/usr/member/config")
+	public String config() {
+		return "usr/member/config";
 	}
 
 }
