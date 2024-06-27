@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<c:set var="pageTitle" value="계정 정보" />
+<c:set var="pageTitle" value="개인 정보" />
 
 <%@ include file="../../common/head.jsp"%>
 

@@ -6,9 +6,9 @@
 
 <%@ include file="../../common/head.jsp"%>
 
-<section class="m-10">
-	<div>
-		<div class="table-box-type">
+<section class="mt-8 text-lg text-center">
+	<div class="container flex flex-col mx-auto px-3 w-3/5">
+		<div class="flex justify-center">
 			<table class="w-3/5 text-center">
 				<tr>
 					<th class="border-collapse border-2 bg-orange-300 w-20">글 번호</th>
@@ -36,29 +36,29 @@
 				</tr>
 			</table>
 		</div>
+		<div class="text-4xl mt-4">
+			<div class="tooltip" data-tip="뒤로 가기">
+				<button class="btn btn-outline btn-info" onclick="history.back();">			
+					<i class="fa-solid fa-arrow-left-long"></i>
+				</button>
+			</div>
+			<c:if test="${loginMemberNumber == article.memberNumber }">
+				<div class="tooltip" data-tip="글 수정">
+				<button class="btn btn-outline btn-info" type="button"
+					onclick="location.href='modify?id=${article.id }'">
+					<i class="fa-solid fa-pen"></i>
+				</button>
+				</div>
+				<div class="tooltip" data-tip="글 삭제">
+				<button class="btn btn-outline btn-info" type="button"
+					onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }'">
+					<i class="fa-solid fa-trash"></i>
+				</button>
+				</div>
+			</c:if>
+		</div>
 	</div>
 	
-	<div class="text-4xl mt-4">
-		<div class="tooltip" data-tip="뒤로 가기">
-			<button class="btn btn-outline btn-info" onclick="history.back();">			
-				<i class="fa-solid fa-arrow-left-long"></i>
-			</button>
-		</div>
-		<c:if test="${loginMemberNumber == article.memberNumber }">
-			<div class="tooltip" data-tip="글 수정">
-			<button class="btn btn-outline btn-info" type="button"
-				onclick="location.href='modify?id=${article.id }'">
-				<i class="fa-solid fa-pen"></i>
-			</button>
-			</div>
-			<div class="tooltip" data-tip="글 삭제">
-			<button class="btn btn-outline btn-info" type="button"
-				onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }'">
-				<i class="fa-solid fa-trash"></i>
-			</button>
-			</div>
-		</c:if>
-	</div>
 </section>
 
 <%@ include file="../../common/foot.jsp"%>

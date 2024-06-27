@@ -30,8 +30,8 @@
 
 <section class="mt-8 text-lg">
 	<div class="container mx-auto px-3">
-		<form action="doWrite" method="post" onsubmit="check(this); return false;">
-			<input type="hidden" value="${article.id }" name = id>
+		<form action="doWrite" method="GET" onsubmit="check(this); return false;">
+			<input type="hidden" value="${boardId }" name="boardId">
 			<label class="input input-bordered flex items-center gap-2">
 				글 제목 : <input type="text" class="grow" name="title"
 				placeholder="${article.title } " />
@@ -48,8 +48,5 @@
 		</form>
 	</div>
 </section>
-
-
-
 
 <%@ include file="../../common/foot.jsp"%>

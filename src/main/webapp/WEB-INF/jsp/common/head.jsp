@@ -62,7 +62,9 @@
 			<li class="hover:underline p-4"><a
 				class="h-full px-3 flex items-center" href="/"><span>HOME</span></a></li>
 			<li class="hover:underline p-4"><a
-				class="h-full px-3 flex items-center" href="/usr/article/list"><span>LIST</span></a></li>
+				class="h-full px-3 flex items-center" href="/usr/article/list?boardId=1"><span>NOTICE</span></a></li>
+			<li class="hover:underline p-4"><a
+				class="h-full px-3 flex items-center" href="/usr/article/list?boardId=2"><span>LIST</span></a></li>
 		</ul>
 	</div>
 

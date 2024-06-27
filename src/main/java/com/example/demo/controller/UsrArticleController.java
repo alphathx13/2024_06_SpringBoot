@@ -26,15 +26,16 @@ public class UsrArticleController {
 	}
 	
 	@GetMapping("/usr/article/write")
-	public String write() {
+	public String write(Model model, int boardId) {
+		model.addAttribute("boardId", boardId);
 		return "/usr/article/write";
 	}
 	
-	@PostMapping("/usr/article/doWrite")
+	@GetMapping("/usr/article/doWrite")
 	@ResponseBody
-	public String doWrite(HttpSession session, String title, String body) {
+	public String doWrite(HttpSession session, String title, String body, int boardId) {
 		
-		articleService.articleWrite(title, body, (int) session.getAttribute("loginMemberNumber"));
+		articleService.articleWrite(title, body, boardId, (int) session.getAttribute("loginMemberNumber"));
 
 		int id = articleService.getLastInsertId();
 		
@@ -42,11 +43,16 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/list")
-	public String list(Model model) {
+	public String list(Model model, int boardId, int cPage) {
 		
-		List<Article> articles = articleService.articleList();
-		
+		List<Article> articles = articleService.articleList(boardId);
 		model.addAttribute("articles", articles);
+		
+		int articleCount = articleService.articleCount(boardId);
+		model.addAttribute("articleCount", articleCount);
+		
+		String boardName = articleService.findBoard(boardId);
+		model.addAttribute("boardName", boardName);
 		
 		return "usr/article/list";
 	}

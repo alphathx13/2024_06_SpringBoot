@@ -20,17 +20,19 @@ public interface ArticleDao {
 					, title = #{title}
 					, body = #{body}
 					, memberNumber = #{memberNumber}
+					, boardId = #{boardId}; 
 			""")
-	public void articleWrite(String title, String body, int memberNumber);
+	public void articleWrite(String title, String body, int boardId, int memberNumber);
 	
 	@Select("""
 			select a.*, m.nickname `writerName`
 				from article a
 				Inner join `member` m
 				on a.memberNumber = m.id
+				where a.boardId = #{boardId}
 				order by id desc
 			""")
-	public List<Article> articleList();
+	public List<Article> articleList(int boardId);
 	
 	@Select("""
 			select a.*, m.nickname `writerName`
@@ -67,4 +69,17 @@ public interface ArticleDao {
 	public int getLastInsertId();
 
 
+	@Select("""
+			SELECT `name` 
+				FROM board
+				WHERE id = #{boardId}
+			""")
+	public String findBoard(int boardId);
+
+	@Select("""
+			SELECT count(id)
+				FROM article
+				WHERE boardId = #{boardId}
+			""")
+	public int articleCount(int boardId);
 }

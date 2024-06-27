@@ -1,7 +1,8 @@
-DROP DATABASE IF EXISTS SB_AM
+DROP DATABASE IF EXISTS SB_AM;
 
-CREATE DATABASE SB_AM
+CREATE DATABASE SB_AM;
 
+USE SB_AM;
 
 ###################################################################
 
@@ -13,41 +14,84 @@ CREATE TABLE article (
     , updateDate DATETIME NOT NULL
     , title VARCHAR(100) NOT NULL
     , `body` TEXT NOT NULL
-    , memberNumber INT UNSIED NOT NULL DEFAULT 2
+    , memberNumber INT(100) NOT NULL
+    , boardId INT(20) UNSIGNED NOT NULL
 );
 
+DROP TABLE IF EXISTS `member`;
+
+CREATE TABLE `member`(
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
+    , regDate DATETIME NOT NULL
+    , updateDate DATETIME NOT NULL
+    , loginId VARCHAR(20) NOT NULL
+    , loginPw VARCHAR(100) NOT NULL
+    , `name` VARCHAR(20) NOT NULL
+    , nickname VARCHAR(20) NOT NULL
+    , cellphone VARCHAR(20) NOT NULL
+    , email VARCHAR(50) NOT NULL
+    , authLevel INT UNSIGNED NOT NULL DEFAULT 2 COMMENT '권한 레벨 (일반 = 2, 관리자 = 1)'
+    , delStatus INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '탈퇴 여부 (탈퇴 전 = 0, 탈퇴 후 = 1)'
+    , delDate DATETIME COMMENT '탈퇴 날짜'
+);
+
+###################################################################
+
+CREATE TABLE board (
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
+    , `name` VARCHAR(20) NOT NULL COMMENT '게시판이름'
+    
+);
+## 게시판들을 관리하기 위한 게시판
+
+INSERT INTO board
+    SET `name` = '공지사항';
+
+INSERT INTO board
+    SET `name` = '자유게시판';
+
+
+###################################################################
 
 INSERT INTO article
     SET regDATE = NOW()
         , updateDATE = NOW()
-        , title = CONCAT('글제목_', SUBSTRING(RAND(), -3))
-        , `body` = CONCAT('글내용_', SUBSTRING(RAND(), -5))
-
-###################################################################
-
-DROP TABLE IF EXISTS `member`;
-
-CREATE TABLE `member` (
-    memberNumber INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
-    , loginId VARCHAR(30) NOT NULL UNIQUE
-    , loginPw VARCHAR(100) NOT NULL
-    , `name` VARCHAR(20) NOT NULL
-    , regDate DATETIME NOT NULL
-    , updateDate DATETIME NOT NULL
-    , nickname VARCHAR(20) NOT NULL
-    , cellphone VARCHAR(20) NOT NULL
-    , email VARCHAR(20) NOT NULL
-);
+        , title = CONCAT('제목_', SUBSTRING(RAND(), -3))
+        , `body` = CONCAT('내용_', SUBSTRING(RAND(), -5))
+        , memberNumber = 2
+        , boardId = 2;
 
 INSERT INTO `member`
-    SET memberId = CONCAT('id_', SUBSTRING(RAND(), -5))
-        , memberPassword = CONCAT('pass_', SUBSTRING(RAND(), -5))
-        , `name` = CONCAT('김', SUBSTRING(RAND(), -5))
-        , regDate = NOW()
-        , updateDate = NOW();
+    SET regDate = NOW()
+        , updateDate = NOW()
+        , loginId = 'admin'
+        , loginPw = 'admin'
+        , `name` = '관리자'
+        , nickname = 'admin'
+        , cellphone = '010-0000-0000'
+        , email = 'admin@site.com'
+        , authLevel = 1;
+
+INSERT INTO `member`
+    SET regDate = NOW()
+        , updateDate = NOW()
+        , loginId = 'user2'
+        , loginPw = 'user2'
+        , `name` = '유저2'
+        , nickname = 'user2'
+        , cellphone = '010-1313-1111'
+        , email = 'user2@site.com';
 
 ##################################################
         
+INSERT INTO article (regDATE, updateDATE, title, `body`, memberNumber, boardId)
+SELECT NOW(), NOW(), CONCAT('제목_', FLOOR(RAND() * 1000)), CONCAT('내용_', FLOOR(RAND() * 1000)), FLOOR(RAND()*3) + 1, FLOOR(RAND()*2) +1 FROM article;
+        
 SELECT * FROM article;
+DESC article;
 
 SELECT * FROM `member`;
+DESC `member`;
+
+SELECT * FROM board;
+DESC board;

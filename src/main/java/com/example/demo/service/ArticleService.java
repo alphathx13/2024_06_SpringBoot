@@ -16,12 +16,12 @@ public class ArticleService {
 		this.articleDao = articleDao;
 	}
 
-	public void articleWrite(String title, String body, int memberNumber) {
-		articleDao.articleWrite(title, body, memberNumber);
+	public void articleWrite(String title, String body, int boardId, int memberNumber) {
+		articleDao.articleWrite(title, body, boardId, memberNumber);
 	}
 
-	public List<Article> articleList() {
-		return articleDao.articleList();
+	public List<Article> articleList(int boardId) {
+		return articleDao.articleList(boardId);
 	}
 	
 	public Article getArticleById(int id) {
@@ -42,6 +42,14 @@ public class ArticleService {
 
 	public Article forPrintArticle(int id) {
 		return articleDao.forPrintArticle(id);
+	}
+
+	public String findBoard(int boardId) {
+		return articleDao.findBoard(boardId);
+	}
+
+	public int articleCount(int boardId) {
+		return articleDao.articleCount(boardId);
 	}
 	
 }

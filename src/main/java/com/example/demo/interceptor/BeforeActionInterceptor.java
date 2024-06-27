@@ -20,6 +20,5 @@ public class BeforeActionInterceptor implements HandlerInterceptor{
 		request.setAttribute("rq", rq);
 		
 		return HandlerInterceptor.super.preHandle(request, response, handler);
-		// true 라면 정상작동, false라면 controller로 넘어가지 못함
 	}
 }

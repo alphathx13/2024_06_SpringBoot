@@ -2,12 +2,13 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>    
     
-<c:set var="pageTitle" value="게시물 목록" />    
+<c:set var="pageTitle" value="${boardName} " />    
     
 <%@ include file="../../common/head.jsp" %>      
 	
 	<section class="mt-8 text-lg text-center">
 		<div class="container flex flex-col mx-auto px-3 w-3/5">
+		<div class="text-left"><span>총 게시글 : ${articleCount }</span></div>
 			<div class="flex justify-center">
 				<table class = "w-full text-center">
 					<colgroup>
@@ -39,7 +40,7 @@
 			<div class="mt-4 w-full flex justify-end">
 				<c:if test="${rq.loginMemberNumber != 0 }">
 					<div class="tooltip" data-tip="글 작성">
-						<a class="btn btn-outline btn-info mr-4" href="write">
+						<a class="btn btn-outline btn-info mr-4" href="write?boardId=${param.boardId}">
 							<i class="fa-solid fa-pen"></i>
 						</a>
 					</div>
@@ -48,6 +49,4 @@
 		</div>
 	</section>
 	
-	
-
 <%@ include file="../../common/foot.jsp" %>  
