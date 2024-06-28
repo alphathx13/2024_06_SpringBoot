@@ -1,7 +1,5 @@
 package com.example.demo.vo;
 
-import org.springframework.web.context.annotation.SessionScope;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

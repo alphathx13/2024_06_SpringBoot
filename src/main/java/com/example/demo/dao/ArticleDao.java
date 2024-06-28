@@ -31,15 +31,19 @@ public interface ArticleDao {
 				Inner join `member` m
 					on a.memberNumber = m.id
 				where a.boardId = #{boardId}
-				<if test="searchText != '' and searchType == 1">
-					and a.title like CONCAT('%', #{searchText}, '%')
-				</if>
-				<if test="searchText != '' and searchType == 2">
-					and a.body like CONCAT('%', #{searchText}, '%')
-				</if>
-				<if test="searchText != '' and searchType == 3">
-					and (a.title like CONCAT('%', #{searchText}, '%') or a.body like CONCAT('%', #{searchText}, '%'))
-				</if>
+					<if test="searchText != ''">
+						<choose>
+							<when test="searchType == 1">
+								and title like CONCAT('%', #{searchText}, '%')
+							</when>
+							<when test="searchType == 2">
+								and body like CONCAT('%', #{searchText}, '%')
+							</when>
+							<otherwise>
+								and (title like CONCAT('%', #{searchText}, '%') or body like CONCAT('%', #{searchText}, '%'))
+							</otherwise>
+						</choose>
+					</if>
 				order by id desc
 				LIMIT #{from}, #{itemsInPage};
 			</script>
@@ -93,14 +97,18 @@ public interface ArticleDao {
 			SELECT count(id)
 				FROM article
 				WHERE boardId = #{boardId}
-				<if test="searchText != '' and searchType == 1">
-					and title like CONCAT('%', #{searchText}, '%')
-				</if>
-				<if test="searchText != '' and searchType == 2">
-					and body like CONCAT('%', #{searchText}, '%')
-				</if>
-				<if test="searchText != '' and searchType == 3">
-					and (title like CONCAT('%', #{searchText}, '%') or body like CONCAT('%', #{searchText}, '%'))
+				<if test="searchText != ''">
+					<choose>
+						<when test="searchType == 1">
+							and title like CONCAT('%', #{searchText}, '%')
+						</when>
+						<when test="searchType == 2">
+							and body like CONCAT('%', #{searchText}, '%')
+						</when>
+						<otherwise>
+							and (title like CONCAT('%', #{searchText}, '%') or body like CONCAT('%', #{searchText}, '%'))
+						</otherwise>
+					</choose>
 				</if>
 			</script>
 			""")
