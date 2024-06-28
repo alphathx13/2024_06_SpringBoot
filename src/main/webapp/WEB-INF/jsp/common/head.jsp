@@ -30,7 +30,6 @@
 
 </head>
 <body>
-
 	<div class="h-20 flex container mx-auto text-3xl text-sky-500">
 		<div class="logo text-6xl">
 			<a href="#" class="h-full flex items-center"><i
@@ -53,7 +52,7 @@
 						<ul tabindex="0"
 							class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 shadow">
 							<li><button class="h-full flex items-center" onclick="location.href='/usr/member/config'"> Setting </button></li>
-							<li><button class="h-full flex items-center" onclick="if(confirm('로그아웃 하시겠습니까?') == false) return false; location.href='/usr/member/logout'">Logout</button></li>
+							<li><button class="h-full flex items-center" onclick="if(confirm('로그아웃 하시겠습니까?') == false) return false; location.href='/usr/member/doLogout'">Logout</button></li>
 						</ul>
 					</div>
 				</c:otherwise>

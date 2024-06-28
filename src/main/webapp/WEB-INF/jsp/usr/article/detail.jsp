@@ -51,14 +51,13 @@
 				</div>
 				<div class="tooltip" data-tip="글 삭제">
 				<button class="btn btn-outline btn-info" type="button"
-					onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }'">
+					onclick="if(confirm('정말 삭제하시겠습니까?') == false) return false; location.href='doDelete?id=${article.id }&boardId=${article.boardId }'">
 					<i class="fa-solid fa-trash"></i>
 				</button>
 				</div>
 			</c:if>
 		</div>
 	</div>
-	
 </section>
 
 <%@ include file="../../common/foot.jsp"%>

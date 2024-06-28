@@ -39,6 +39,8 @@ public class Rq {
 		
 		this.loginMemberNumber = loginMemberNumber;
 		this.loginMemberNn = loginMemberNn;
+		
+		request.setAttribute("rq", this);
 
 	}
 	
@@ -61,6 +63,9 @@ public class Rq {
 	public void logout() {
 		this.session.removeAttribute("loginMemberNumber");
 		this.session.removeAttribute("loginMemberNn");
-		
 	}
+	
+	public void init() {
+	}
+	
 }

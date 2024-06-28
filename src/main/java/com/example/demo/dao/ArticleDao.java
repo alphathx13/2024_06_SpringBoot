@@ -25,14 +25,26 @@ public interface ArticleDao {
 	public void articleWrite(String title, String body, int boardId, int memberNumber);
 	
 	@Select("""
+			<script>
 			select a.*, m.nickname `writerName`
 				from article a
 				Inner join `member` m
-				on a.memberNumber = m.id
+					on a.memberNumber = m.id
 				where a.boardId = #{boardId}
+				<if test="searchText != '' and searchType == 1">
+					and a.title like CONCAT('%', #{searchText}, '%')
+				</if>
+				<if test="searchText != '' and searchType == 2">
+					and a.body like CONCAT('%', #{searchText}, '%')
+				</if>
+				<if test="searchText != '' and searchType == 3">
+					and (a.title like CONCAT('%', #{searchText}, '%') or a.body like CONCAT('%', #{searchText}, '%'))
+				</if>
 				order by id desc
+				LIMIT #{from}, #{itemsInPage};
+			</script>
 			""")
-	public List<Article> articleList(int boardId);
+	public List<Article> articleList(int from, int itemsInPage, int boardId, int searchType, String searchText);
 	
 	@Select("""
 			select a.*, m.nickname `writerName`
@@ -77,9 +89,20 @@ public interface ArticleDao {
 	public String findBoard(int boardId);
 
 	@Select("""
+			<script>
 			SELECT count(id)
 				FROM article
 				WHERE boardId = #{boardId}
+				<if test="searchText != '' and searchType == 1">
+					and title like CONCAT('%', #{searchText}, '%')
+				</if>
+				<if test="searchText != '' and searchType == 2">
+					and body like CONCAT('%', #{searchText}, '%')
+				</if>
+				<if test="searchText != '' and searchType == 3">
+					and (title like CONCAT('%', #{searchText}, '%') or body like CONCAT('%', #{searchText}, '%'))
+				</if>
+			</script>
 			""")
-	public int articleCount(int boardId);
+	public int articleCount(int boardId, int searchType, String searchText);
 }

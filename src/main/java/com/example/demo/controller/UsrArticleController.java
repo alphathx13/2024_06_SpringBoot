@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.service.ArticleService;
@@ -13,16 +14,15 @@ import com.example.demo.util.Util;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.Rq;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class UsrArticleController {
 
 	private ArticleService articleService;
+	private Rq rq;
 
-	public UsrArticleController(ArticleService articleService) {
+	public UsrArticleController(ArticleService articleService, Rq rq) {
 		this.articleService = articleService;
+		this.rq = rq;
 	}
 	
 	@GetMapping("/usr/article/write")
@@ -33,9 +33,9 @@ public class UsrArticleController {
 	
 	@GetMapping("/usr/article/doWrite")
 	@ResponseBody
-	public String doWrite(HttpSession session, String title, String body, int boardId) {
+	public String doWrite(int boardId, String title, String body) {
 		
-		articleService.articleWrite(title, body, boardId, (int) session.getAttribute("loginMemberNumber"));
+		articleService.articleWrite(title, body, boardId, rq.getLoginMemberNumber());
 
 		int id = articleService.getLastInsertId();
 		
@@ -43,29 +43,40 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/list")
-	public String list(Model model, int boardId, int cPage) {
+	public String list(Model model, int boardId, @RequestParam(defaultValue = "0") int searchType, @RequestParam(defaultValue = "") String searchText, @RequestParam(defaultValue = "10") int itemsInPage, @RequestParam(defaultValue = "1") int cPage) {
 		
-		List<Article> articles = articleService.articleList(boardId);
-		model.addAttribute("articles", articles);
+		searchText = searchText.trim();
 		
-		int articleCount = articleService.articleCount(boardId);
-		model.addAttribute("articleCount", articleCount);
+		int from = ((cPage - 1) * itemsInPage);
+		
+		int articleCount = articleService.articleCount(boardId, searchType, searchText);
+		
+		int tPage = articleCount % itemsInPage == 0 ? articleCount / itemsInPage : articleCount / itemsInPage + 1;
+//		tPage = (int) Math.ceil((double) tArticle / 10);	
+		
+		List<Article> articles = articleService.articleList(from, itemsInPage, boardId, searchType, searchText);
 		
 		String boardName = articleService.findBoard(boardId);
+
+		model.addAttribute("articleCount", articleCount);
+		model.addAttribute("articles", articles);
 		model.addAttribute("boardName", boardName);
-		
+		model.addAttribute("cPage", cPage);
+		model.addAttribute("tPage", tPage);
+		model.addAttribute("from", from);
+		model.addAttribute("itemsInPage", itemsInPage);
+		model.addAttribute("searchText", searchText);
+		model.addAttribute("searchType", searchType);
+
 		return "usr/article/list";
 	}
 
 	@GetMapping("/usr/article/detail")
-	public String showDetail(HttpServletRequest request, Model model, int id) {
-		
-		Rq rq = (Rq) request.getAttribute("rq");
+	public String showDetail(Model model, int id) {
 		
 		Article article = articleService.forPrintArticle(id);
 		
 		model.addAttribute("article", article);
-		model.addAttribute("loginMemberNumber", rq.getLoginMemberNumber());
 		
 		return "usr/article/detail";
 	}
@@ -76,6 +87,7 @@ public class UsrArticleController {
 		Article article = articleService.forPrintArticle(id);
 		
 		model.addAttribute("article", article);
+		
 		return "usr/article/modify";
 	}
 	
@@ -90,11 +102,11 @@ public class UsrArticleController {
 		
 	@GetMapping("/usr/article/doDelete")
 	@ResponseBody
-	public String doDelete(int id) {
+	public String doDelete(int id, int boardId) {
 		
 		articleService.articleDelete(id);
 		
-		return Util.jsReplace(String.format("%d번 게시글을 삭제했습니다.", id), "list");
+		return Util.jsReplace(String.format("%d번 게시글을 삭제했습니다.", id), String.format("/usr/article/list?boardId=%d", boardId));
 	}
 
 }

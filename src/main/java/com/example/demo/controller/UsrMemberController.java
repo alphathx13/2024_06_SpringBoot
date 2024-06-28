@@ -18,9 +18,11 @@ import jakarta.servlet.http.HttpSession;
 public class UsrMemberController {
 
 	private MemberService memberService;
+	private Rq rq;
 
-	public UsrMemberController(MemberService memberService) {
+	public UsrMemberController(MemberService memberService, Rq rq) {
 		this.memberService = memberService;
+		this.rq = rq;
 	}
 	
 	@GetMapping("/usr/member/doJoin")
@@ -58,9 +60,7 @@ public class UsrMemberController {
 	
 	@PostMapping("/usr/member/doLogin")
 	@ResponseBody
-	public String doLogin(HttpSession session, HttpServletRequest request, String id, String pw) {
-		
-		Rq rq = (Rq) request.getAttribute("rq");
+	public String doLogin(String id, String pw) {
 		
 		Member member = memberService.getMemberByLoginId(id);
 		
@@ -77,12 +77,10 @@ public class UsrMemberController {
 		return Util.jsReplace(String.format("%s 님의 로그인을 환영합니다.", member.getNickname()), "/");
 	}
 	
-	@GetMapping("/usr/member/logout")
+	@GetMapping("/usr/member/doLogout")
 	@ResponseBody
-	public String logout(HttpSession session, HttpServletRequest request, String loginId, String loginPw) {
+	public String doLogout(String loginId, String loginPw) {
 	
-		Rq rq = (Rq) request.getAttribute("rq");
-		
 		rq.logout();
 		
 		return Util.jsReplace("정상적으로 로그아웃 되었습니다.", "/");
