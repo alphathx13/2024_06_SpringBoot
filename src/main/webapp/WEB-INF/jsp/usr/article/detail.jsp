@@ -38,6 +38,10 @@
 					<th class="border-collapse border-2 bg-orange-300">글 내용</th>
 					<td class="border-collapse border-2 bg-orange-200">${article.body }</td>
 				</tr>
+				<tr class="">
+					<th class="border-collapse border-2 bg-orange-300">추천수</th>
+					<td class="border-collapse border-2 bg-orange-200">${article.likePoint }</td>
+				</tr>
 			</table>
 		</div>
 		<div class="text-4xl mt-4">
@@ -46,6 +50,25 @@
 					<i class="fa-solid fa-arrow-left-long"></i>
 				</button>
 			</div>
+			
+			<c:choose>
+				<c:when test = "${articleLikeCheck != 1 }">
+					<div class="tooltip" data-tip="추천">
+						<button class="btn btn-outline btn-info" type="button"
+							onclick="if(confirm('추천하시겠습니까?') == false) return false; location.href='doLike?id=${article.id }&boardId=${article.boardId }&memberNumber=${article.memberNumber }'">
+							<i class="fa-regular fa-star"></i>
+						</button>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="tooltip" data-tip="추천취소">
+						<button class="btn btn-outline btn-info" type="button"
+							onclick="if(confirm('추천을 취소하시겠습니까?') == false) return false; location.href='doLike?id=${article.id }&boardId=${article.boardId }&memberNumber=${article.memberNumber }'">
+							<i class="fa-solid fa-star"></i>
+						</button>
+					</div>
+				</c:otherwise>
+			</c:choose>
 			<c:if test="${loginMemberNumber == article.memberNumber }">
 				<div class="tooltip" data-tip="글 수정">
 				<button class="btn btn-outline btn-info" type="button"

@@ -51,5 +51,14 @@ public class ArticleService {
 	public void viewCountPlus(int id) {
 		articleDao.viewCountPlus(id);
 	}
+
+	public void articleLike(int id, int memberNumber) {
+		articleDao.articleLike(id, memberNumber);
+	}
+
+	public int articleLikeCheck(int loginMemberNumber, int id) {
+		
+		return articleDao.articleLikeCheck(id, loginMemberNumber);
+	}
 	
 }

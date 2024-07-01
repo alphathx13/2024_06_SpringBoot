@@ -43,6 +43,7 @@
 						<col width="80"/>
 						<col width="200"/>
 						<col width="60"/>
+						<col width="60"/>
 					</colgroup>
 				    <thead>
 			     		<tr>
@@ -51,6 +52,7 @@
 					        <th>작성자</th>
 					        <th>작성일시</th>
 					        <th>조회수</th>
+					        <th>추천수</th>
 			   			</tr>
 			    	</thead>
 			    	<tbody>
@@ -74,6 +76,7 @@
 								</td>
 			        			<th>${article.regDate.substring(2, 16) }</th>
 			        			<th>${article.viewCount }</th>
+			        			<th>${article.likePoint }</th>
 			      			</tr>
 			   			</c:forEach>  
 			    	</tbody>

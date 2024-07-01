@@ -93,22 +93,7 @@ public class UsrArticleController {
 	@GetMapping("/usr/article/detail")
 	public String showDetail(HttpServletRequest request, HttpServletResponse response, Model model, int id) {
 
-		boolean isViewed = false;
-		
-//		Cookie[] cookies = request.getCookies();
-//		boolean isViewed = false;
-//
-//		if (cookies != null) {
-//			for (Cookie cookie : cookies) {
-//				if (cookie.getName().equals("viewedArticle_" + id)) {
-//					isViewed = true;
-//					break;
-//				}
-//			}
-//		}
-//		
-//
-//		
+		boolean isViewed = false;	
 		
 		if (WebUtils.getCookie(request, "viewedArticle_"+ id) != null) {
 			isViewed = true;
@@ -117,8 +102,16 @@ public class UsrArticleController {
 		if (!isViewed) {
 			articleService.viewCountPlus(id);
 			Cookie cookie = new Cookie("viewedArticle_" + id, "true");
-			cookie.setMaxAge(60 * 60 * 24);
+			cookie.setMaxAge(3600 * 24);
 			response.addCookie(cookie);
+		}
+		
+		int articleLikeCheck = articleService.articleLikeCheck(rq.getLoginMemberNumber(), id);
+		
+		System.out.println(articleLikeCheck);
+		
+		if (articleLikeCheck == 1) {
+			model.addAttribute("1", articleLikeCheck);
 		}
 		
 		Article article = articleService.forPrintArticle(id);
@@ -155,5 +148,15 @@ public class UsrArticleController {
 		
 		return Util.jsReplace(String.format("%d번 게시글을 삭제했습니다.", id), String.format("/usr/article/list?boardId=%d", boardId));
 	}
+	
+	@GetMapping("/usr/article/doLike")
+	@ResponseBody
+	public String like(int id, int memberNumber, int boardId) {
+		
+		articleService.articleLike(id, memberNumber);
+		
+		return Util.jsReplace(String.format("%d번 게시글을 추천했습니다.", id), String.format("/usr/article/detail?boardId=%d&id=%d", boardId, id));
+	}
+	
 
 }

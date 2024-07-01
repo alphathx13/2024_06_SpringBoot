@@ -26,10 +26,12 @@ public interface ArticleDao {
 	
 	@Select("""
 			<script>
-			select a.*, m.nickname `writerName`
+			select a.*, m.nickname `writerName`, SUM(l.point) `likePoint`
 				from article a
 				Inner join `member` m
 					on a.memberNumber = m.id
+				INNER JOIN likePoint l
+					ON a.id = l.relId 
 				where a.boardId = #{boardId}
 					<if test="searchText != ''">
 						<choose>
@@ -44,6 +46,8 @@ public interface ArticleDao {
 							</otherwise>
 						</choose>
 					</if>
+					AND l.relTypeCode = 'article'
+				GROUP BY l.relId
 				order by id desc
 				LIMIT #{from}, #{itemsInPage};
 			</script>
@@ -51,11 +55,13 @@ public interface ArticleDao {
 	public List<Article> articleList(int from, int itemsInPage, int boardId, int searchType, String searchText);
 	
 	@Select("""
-			select a.*, m.nickname `writerName`
-				from article a
-				Inner join `member` m
-				on a.memberNumber = m.id
-				where a.id = #{id}
+			SELECT a.*, m.nickname `writerName`, SUM(l.point) `likePoint`
+				FROM article a
+				INNER JOIN `member` m
+				ON a.memberNumber = m.id
+				INNER JOIN likePoint l
+				ON a.id = l.relId 
+				WHERE a.id = #{id} AND l.relTypeCode = 'article';
 			""")
 	public Article forPrintArticle(int id);
 	
@@ -112,4 +118,21 @@ public interface ArticleDao {
 				where id = #{id};
 			""")
 	public void viewCountPlus(int id);
+
+	@Insert("""
+			insert into likePoint
+				set memberNumber = #{memberNumber}
+					, relTypeCode = 'article'
+					, relId = #{id}
+			""")
+	public void articleLike(int id, int memberNumber);
+
+	@Select("""
+			SELECT count(*)
+				FROM likePoint 
+				WHERE memberNumber = #{loginMemberNumber} 
+					and relId = #{id} 
+					and relTypeCode = 'article';
+			""")
+	public int articleLikeCheck(int id, int loginMemberNumber);
 }

@@ -17,4 +17,5 @@ public class Article {
 	private String writerName;
 	private int boardId;
 	private int viewCount;
+	private int likePoint;
 }
