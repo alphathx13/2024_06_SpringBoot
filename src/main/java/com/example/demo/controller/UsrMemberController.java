@@ -30,18 +30,18 @@ public class UsrMemberController {
 	@PostMapping("/usr/member/doJoin")
 	@ResponseBody
 	public ResultData<Member> join(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
-		if (Util.isEmpty(loginId))
-			return ResultData.from("F-1", "아이디는 필수입력 정보입니다.");
-		if (Util.isEmpty(loginPw)) 
-			return ResultData.from("F-2", "비밀번호는 필수입력 정보입니다.");
-		if (Util.isEmpty(name)) 
-			return ResultData.from("F-3", "이름은 필수입력 정보입니다.");
-		if (Util.isEmpty(nickname)) 
-			return ResultData.from("F-4", "닉네임은 필수입력 정보입니다.");
-		if (Util.isEmpty(cellphone)) 
-			return ResultData.from("F-5", "핸드폰 번호는 필수입력 정보입니다.");
-		if (Util.isEmpty(email)) 
-			return ResultData.from("F-6", "이메일은 필수입력 정보입니다.");
+//		if (Util.isEmpty(loginId))
+//			return ResultData.from("F-1", "아이디는 필수입력 정보입니다.");
+//		if (Util.isEmpty(loginPw)) 
+//			return ResultData.from("F-2", "비밀번호는 필수입력 정보입니다.");
+//		if (Util.isEmpty(name)) 
+//			return ResultData.from("F-3", "이름은 필수입력 정보입니다.");
+//		if (Util.isEmpty(nickname)) 
+//			return ResultData.from("F-4", "닉네임은 필수입력 정보입니다.");
+//		if (Util.isEmpty(cellphone)) 
+//			return ResultData.from("F-5", "핸드폰 번호는 필수입력 정보입니다.");
+//		if (Util.isEmpty(email)) 
+//			return ResultData.from("F-6", "이메일은 필수입력 정보입니다.");
 		
 		Member member = memberService.getMemberByLoginId(loginId);
 		

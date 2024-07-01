@@ -26,29 +26,28 @@ public interface ArticleDao {
 	
 	@Select("""
 			<script>
-			select a.*, m.nickname `writerName`, SUM(l.point) `likePoint`
-				from article a
-				Inner join `member` m
-					on a.memberNumber = m.id
-				INNER JOIN likePoint l
-					ON a.id = l.relId 
-				where a.boardId = #{boardId}
-					<if test="searchText != ''">
-						<choose>
-							<when test="searchType == 1">
-								and title like CONCAT('%', #{searchText}, '%')
-							</when>
-							<when test="searchType == 2">
-								and body like CONCAT('%', #{searchText}, '%')
-							</when>
-							<otherwise>
-								and (title like CONCAT('%', #{searchText}, '%') or body like CONCAT('%', #{searchText}, '%'))
-							</otherwise>
-						</choose>
-					</if>
-					AND l.relTypeCode = 'article'
-				GROUP BY l.relId
-				order by id desc
+			SELECT a.*, m.nickname `writerName`, IFNULL(SUM(l.point), 0) `likePoint`
+				FROM article a
+				INNER JOIN `member` m
+					ON a.memberNumber = m.id
+				LEFT OUTER JOIN (SELECT * FROM likePoint WHERE relTypeCode = 'article') l
+					ON a.id = l.relId
+				WHERE a.boardId = #{boardId}
+				<if test="searchText != ''">
+					<choose>
+						<when test="searchType == 1">
+							and title like CONCAT('%', #{searchText}, '%')
+						</when>
+						<when test="searchType == 2">
+							and body like CONCAT('%', #{searchText}, '%')
+						</when>
+						<otherwise>
+							and (title like CONCAT('%', #{searchText}, '%') or body like CONCAT('%', #{searchText}, '%'))
+						</otherwise>
+					</choose>
+				</if>
+				GROUP BY a.id
+				ORDER BY a.id desc
 				LIMIT #{from}, #{itemsInPage};
 			</script>
 			""")
@@ -119,14 +118,6 @@ public interface ArticleDao {
 			""")
 	public void viewCountPlus(int id);
 
-	@Insert("""
-			insert into likePoint
-				set memberNumber = #{memberNumber}
-					, relTypeCode = 'article'
-					, relId = #{id}
-			""")
-	public void articleLike(int id, int memberNumber);
-
 	@Select("""
 			SELECT count(*)
 				FROM likePoint 
@@ -135,4 +126,20 @@ public interface ArticleDao {
 					and relTypeCode = 'article';
 			""")
 	public int articleLikeCheck(int id, int loginMemberNumber);
+
+	@Insert("""
+			insert into likePoint
+			set memberNumber = #{memberNumber}
+				, relTypeCode = 'article'
+				, relId = #{id}
+			""")
+	public void articleLike(int id, int memberNumber);
+
+	@Delete("""
+			DELETE FROM likePoint
+			where memberNumber = #{memberNumber}
+				and relTypeCode = 'article'
+				and relId = #{id}
+			""")
+	public void articleUndoLike(int id, int memberNumber);
 }

@@ -18,6 +18,10 @@ CREATE TABLE article (
     , boardId INT(20) UNSIGNED NOT NULL
 );
 
+ALTER TABLE article ADD COLUMN viewCount INT(10) UNSIGNED NOT NULL DEFAULT 0;
+
+## 게시글용 table
+
 DROP TABLE IF EXISTS `member`;
 
 CREATE TABLE `member`(
@@ -35,24 +39,86 @@ CREATE TABLE `member`(
     , delDate DATETIME COMMENT '탈퇴 날짜'
 );
 
-###################################################################
+## ALTER TABLE `member` ADD COLUMN profileImage MEDIUMBLOB;
+## 회원관리용 table
+
+
+
+DROP TABLE IF EXISTS board;
 
 CREATE TABLE board (
     id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
     , `name` VARCHAR(20) NOT NULL COMMENT '게시판이름'
     
 );
-## 게시판들을 관리하기 위한 게시판
+## 게시판들을 관리하기 위한 table
 
-INSERT INTO board
-    SET `name` = '공지사항';
+DROP TABLE IF EXISTS likePoint;
 
-INSERT INTO board
-    SET `name` = '자유게시판';
+CREATE TABLE likePoint(
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
+    , memberNumber INT UNSIGNED NOT NULL
+    , relTypeCode VARCHAR(20) NOT NULL COMMENT '관련 데이터 타입 코드'
+    , relId INT UNSIGNED NOT NULL COMMENT '관련 데이터 번호'
+    , `point` INT NOT NULL DEFAULT 1
+);
+## 추천관리용 table
 
+ALTER TABLE article CONVERT TO CHARSET utf8;
+ALTER TABLE `member` CONVERT TO CHARSET utf8;
+ALTER TABLE board CONVERT TO CHARSET utf8;
+ALTER TABLE likePoint CONVERT TO CHARSET utf8;
 
 ###################################################################
 
+INSERT INTO article
+    SET regDATE = NOW()
+        , updateDATE = NOW()
+        , title = CONCAT('제목_', SUBSTRING(RAND(), -3))
+        , `body` = CONCAT('내용_', SUBSTRING(RAND(), -5))
+        , memberNumber = 1
+        , boardId = 1;
+        
+INSERT INTO article
+    SET regDATE = NOW()
+        , updateDATE = NOW()
+        , title = CONCAT('제목_', SUBSTRING(RAND(), -3))
+        , `body` = CONCAT('내용_', SUBSTRING(RAND(), -5))
+        , memberNumber = 2
+        , boardId = 2;        
+
+INSERT INTO article
+    SET regDATE = NOW()
+        , updateDATE = NOW()
+        , title = CONCAT('제목_', SUBSTRING(RAND(), -3))
+        , `body` = CONCAT('내용_', SUBSTRING(RAND(), -5))
+        , memberNumber = 1
+        , boardId = 1;
+
+INSERT INTO article
+    SET regDATE = NOW()
+        , updateDATE = NOW()
+        , title = CONCAT('제목_', SUBSTRING(RAND(), -3))
+        , `body` = CONCAT('내용_', SUBSTRING(RAND(), -5))
+        , memberNumber = 3
+        , boardId = 2;
+        
+INSERT INTO article
+    SET regDATE = NOW()
+        , updateDATE = NOW()
+        , title = CONCAT('제목_', SUBSTRING(RAND(), -3))
+        , `body` = CONCAT('내용_', SUBSTRING(RAND(), -5))
+        , memberNumber = 1
+        , boardId = 1;
+
+INSERT INTO article
+    SET regDATE = NOW()
+        , updateDATE = NOW()
+        , title = CONCAT('제목_', SUBSTRING(RAND(), -3))
+        , `body` = CONCAT('내용_', SUBSTRING(RAND(), -5))
+        , memberNumber = 3
+        , boardId = 2;
+        
 INSERT INTO article
     SET regDATE = NOW()
         , updateDATE = NOW()
@@ -79,19 +145,70 @@ INSERT INTO `member`
         , loginPw = 'user2'
         , `name` = '유저2'
         , nickname = 'user2'
-        , cellphone = '010-1313-1111'
+        , cellphone = '010-1111-1111'
         , email = 'user2@site.com';
+
+INSERT INTO `member`
+    SET regDate = NOW()
+        , updateDate = NOW()
+        , loginId = 'user3'
+        , loginPw = 'user3'
+        , `name` = '유저3'
+        , nickname = 'user3'
+        , cellphone = '010-1112-1111'
+        , email = 'user3@site.com';
+        
+
+INSERT INTO board
+    SET `name` = '공지사항';
+
+INSERT INTO board
+    SET `name` = '자유게시판';
+    
+# 2번 회원이 2번 게시물에 좋아요
+INSERT INTO likePoint
+    SET memberNumber = 2
+        , relTypeCode = 'article'
+        , relId = 2;
+
+# 2번 회원이 3번 게시물에 좋아요
+INSERT INTO likePoint
+    SET memberNumber = 2
+        , relTypeCode = 'article'
+        , relId = 3;
+
+# 3번 회원이 1번 게시물에 좋아요
+INSERT INTO likePoint
+    SET memberNumber = 3
+        , relTypeCode = 'article'
+        , relId = 1;
+
+# 3번 회원이 3번 게시물에 좋아요
+INSERT INTO likePoint
+    SET memberNumber = 3
+        , relTypeCode = 'article'
+        , relId = 3;    
+
+## 테스트 데이터 생성     
 
 ##################################################
         
-INSERT INTO article (regDATE, updateDATE, title, `body`, memberNumber, boardId)
-SELECT NOW(), NOW(), CONCAT('제목_', FLOOR(RAND() * 1000)), CONCAT('내용_', FLOOR(RAND() * 1000)), FLOOR(RAND()*3) + 1, FLOOR(RAND()*2) +1 FROM article;
+
+# INSERT INTO article (regDATE, updateDATE, title, `body`, memberNumber, boardId)
+# SELECT NOW(), NOW(), CONCAT('제목_', FLOOR(RAND() * 1000)), CONCAT('내용_', FLOOR(RAND() * 1000)), FLOOR(RAND()*3) + 1, FLOOR(RAND()*2) +1 FROM article;
         
-SELECT * FROM article;
-DESC article;
+# SELECT * FROM article;
+# DESC article;
+# truncate article;
 
-SELECT * FROM `member`;
-DESC `member`;
+# SELECT * FROM `member`;
+# DESC `member`;
+# truncate `member`;
 
-SELECT * FROM board;
-DESC board;
+# SELECT * FROM board;
+# DESC board;
+# truncate board;
+
+# select * from likePoint
+# DESC likePoint;
+# truncate likePoint;

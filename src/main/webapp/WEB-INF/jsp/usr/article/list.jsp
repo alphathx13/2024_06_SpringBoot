@@ -145,7 +145,8 @@
 				<c:if test="${cPage < tPage - 4 and tPage > 9}">
 					&nbsp;&nbsp;<a class="join-item btn btn-sm" href="?cPage=${tPage }${baseUri }"> 끝으로</a>&nbsp;&nbsp;
 				</c:if>
-				
+
+				<!-- 
 				<form action="" method="get" onsubmit="pageCheck(this); return false;"> 
 					<input type="hidden" name ="boardId" value="${param.boardId }"/>
 					<input type="hidden" name ="itemsInPage" value="${itemsInPage }"/>
@@ -156,6 +157,7 @@
 						<button> 이동 </button>
 					</label>
 				</form>
+				 -->
 			</div>
 		</div>
 	</section>

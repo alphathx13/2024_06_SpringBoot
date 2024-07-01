@@ -38,11 +38,20 @@
 					<th class="border-collapse border-2 bg-orange-300">글 내용</th>
 					<td class="border-collapse border-2 bg-orange-200">${article.body }</td>
 				</tr>
-				<tr class="">
-					<th class="border-collapse border-2 bg-orange-300">추천수</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.likePoint }</td>
-				</tr>
 			</table>
+		</div>
+		<div id="likes">
+			<div id="undoLike" class="mt-4 tooltip" data-tip="추천취소">
+				<button class="btn btn-outline btn-info w-full" type="button">
+					<i class="fa-solid fa-star"><div id="undoLikePoint"></div></i>
+				</button>
+			</div>
+
+			<div id="doLike" class="mt-4 tooltip w-40" data-tip="추천">
+				<button class="btn btn-outline btn-info" type="button">
+					<i class="fa-regular fa-star"><div id="doLikePoint"></div></i>
+				</button>
+			</div>
 		</div>
 		<div class="text-4xl mt-4">
 			<div class="tooltip" data-tip="뒤로 가기">
@@ -50,25 +59,6 @@
 					<i class="fa-solid fa-arrow-left-long"></i>
 				</button>
 			</div>
-			
-			<c:choose>
-				<c:when test = "${articleLikeCheck != 1 }">
-					<div class="tooltip" data-tip="추천">
-						<button class="btn btn-outline btn-info" type="button"
-							onclick="if(confirm('추천하시겠습니까?') == false) return false; location.href='doLike?id=${article.id }&boardId=${article.boardId }&memberNumber=${article.memberNumber }'">
-							<i class="fa-regular fa-star"></i>
-						</button>
-					</div>
-				</c:when>
-				<c:otherwise>
-					<div class="tooltip" data-tip="추천취소">
-						<button class="btn btn-outline btn-info" type="button"
-							onclick="if(confirm('추천을 취소하시겠습니까?') == false) return false; location.href='doLike?id=${article.id }&boardId=${article.boardId }&memberNumber=${article.memberNumber }'">
-							<i class="fa-solid fa-star"></i>
-						</button>
-					</div>
-				</c:otherwise>
-			</c:choose>
 			<c:if test="${loginMemberNumber == article.memberNumber }">
 				<div class="tooltip" data-tip="글 수정">
 				<button class="btn btn-outline btn-info" type="button"
@@ -86,5 +76,58 @@
 		</div>
 	</div>
 </section>
+
+<script>
+	window.onload=function(){
+		if (${articleLikeCheck == 1}) {
+			$('#doLike').css('display', 'none');
+		} else {
+			$('#undoLike').css('display', 'none');
+		}
+	}
+
+	$(document).ready(function(){
+		$('#doLike').click(function(){
+			$.ajax({
+				url : '/usr/article/doLike', 
+				type : 'GET', 
+				data : { 
+					id : ${article.id},
+					memberNumber : ${rq.loginMemberNumber}
+				},
+				dataType : 'text', 
+				success : function() {
+					$('#doLike').css('display', 'none');
+					$('#undoLike').css('display', 'inline-block');
+				},
+				error : function(xhr, status, error) {
+					console.log(error);
+				},
+			})
+		})
+	})
+	
+	$(document).ready(function(){
+		$('#undoLike').click(function(){
+			$.ajax({
+				url : '/usr/article/undoLike', 
+				type : 'GET', 
+				data : { 
+					id : ${article.id},
+					memberNumber : ${rq.loginMemberNumber}
+				},
+				dataType : 'text', 
+				success : function() { 
+					$('#undoLike').css('display', 'none');
+					$('#doLike').css('display', 'inline-block');
+				},
+				error : function(xhr, status, error) {
+					console.log(error);
+				}
+			})
+		})
+	})
+
+</script>
 
 <%@ include file="../../common/foot.jsp"%>
