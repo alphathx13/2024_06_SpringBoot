@@ -63,9 +63,9 @@
 						        <td>
 						          <div class="flex items-center gap-3">
 						            <div class="avatar">
-						              <div class="mask mask-squircle h-8 w-8">
+						              <div class="mask mask-squircle h-6 w-6">
 						                <img
-						                  src="https://img.daisyui.com/tailwind-css-component-profile-2@56w.png"
+						                  src="https://images.freeimages.com/fic/images/icons/2166/oxygen/128/application_x_desktop.png?fmt=webp&h=350"
 						                  alt="Avatar Tailwind CSS Component" />
 						              </div>
 						            </div>

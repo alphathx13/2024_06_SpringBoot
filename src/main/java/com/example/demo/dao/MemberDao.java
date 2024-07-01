@@ -1,13 +1,10 @@
 package com.example.demo.dao;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.example.demo.vo.Member;
-import com.example.demo.vo.ResultData;
 
 @Mapper
 public interface MemberDao {
@@ -21,7 +18,7 @@ public interface MemberDao {
 			     	, `name` = #{name}
 			     	, nickname = #{nickname}
 			     	, cellphone = #{cellphone}
-			     	, email = #{email};
+			     	, email = #{email}
 			""")
 	public void memberJoin(String loginId, String loginPw, String name, String nickname, String cellphone, String email);
 

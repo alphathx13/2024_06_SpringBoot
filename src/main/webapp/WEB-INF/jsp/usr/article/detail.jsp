@@ -8,51 +8,54 @@
 
 <section class="mt-8 text-lg text-center">
 	<div class="container flex flex-col mx-auto px-3 w-3/5">
+	
 		<div class="flex justify-center">
-			<table class="w-3/5 text-center">
+			<table class="w-full table table-xl table-pin-rows table-pin-cols text-xl">
+				<colgroup>
+					<col width=150/>
+					<col width=150/>
+					<col/>
+					<col width=200/>
+				</colgroup>
 				<tr>
-					<th class="border-collapse border-2 bg-orange-300 w-20">글 번호</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.id }</td>
+					<td colspan="4" class="text-center">${article.title }</td>
 				</tr>
 				<tr>
-					<th class="border-collapse border-2 bg-orange-300">작성자</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.writerName }</td>
-				</tr>
-				<tr>
-					<th class="border-collapse border-2 bg-orange-300">작성일시</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.regDate.substring(2, 16) }</td>
-				</tr>
-				<tr>
-					<th class="border-collapse border-2 bg-orange-300">수정일시</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.updateDate.substring(2, 16) }</td>
-				</tr>
-				<tr>
-					<th class="border-collapse border-2 bg-orange-300">조회수</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.viewCount }</td>
-				</tr>
-				<tr>
-					<th class="border-collapse border-2 bg-orange-300">글 제목</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.title }</td>
+					<td class="">${article.writerName }</td>
+					<td class=""><i class="fa-solid fa-eye"></i> ${article.viewCount }</td>
+					<td class="grow"></td>
+					<td> 
+						<c:choose>
+							<c:when test="${article.regDate == article.updateDate }">
+								${article.regDate.substring(2, 16) } 
+							</c:when>
+							<c:otherwise>
+								작성일자 : ${article.regDate.substring(2, 16) } / 수정일자 : ${article.updateDate.substring(2, 16) }
+							</c:otherwise>
+						</c:choose>
+					</td>
 				</tr>
 				<tr class="h-40">
-					<th class="border-collapse border-2 bg-orange-300">글 내용</th>
-					<td class="border-collapse border-2 bg-orange-200">${article.body }</td>
+					<td colspan="4" class="">${article.body }</td>
 				</tr>
 			</table>
 		</div>
-		<div id="likes">
-			<div id="undoLike" class="mt-4 tooltip" data-tip="추천취소">
-				<button class="btn btn-outline btn-info w-full" type="button">
-					<i class="fa-solid fa-star"><div id="undoLikePoint"></div></i>
-				</button>
+		
+		<c:if test="${rq.loginMemberNumber != 0 }">
+			<div class="h-16">
+				<div id="undoLike" class="tooltip w-16 h-full text-3xl" data-tip="추천 취소">
+					<button class="btn btn-outline btn-info w-full h-full" type="button">
+						<i class="fa-solid fa-star"><div class="likePoint text-xl"></div></i>
+					</button>
+				</div>
+				<div id="doLike" class="tooltip w-16 h-full text-3xl" data-tip="추천">
+					<button class="btn btn-outline btn-info w-full h-full" type="button">
+						<i class="fa-regular fa-star"><div class="likePoint text-xl"></div></i>
+					</button>
+				</div>
 			</div>
-
-			<div id="doLike" class="mt-4 tooltip w-40" data-tip="추천">
-				<button class="btn btn-outline btn-info" type="button">
-					<i class="fa-regular fa-star"><div id="doLikePoint"></div></i>
-				</button>
-			</div>
-		</div>
+		</c:if>
+		
 		<div class="text-4xl mt-4">
 			<div class="tooltip" data-tip="뒤로 가기">
 				<button class="btn btn-outline btn-info" onclick="history.back();">			
@@ -84,9 +87,15 @@
 		} else {
 			$('#undoLike').css('display', 'none');
 		}
+		$('.likePoint').each(function(index,item){
+			$(item).text("${article.likePoint}")
+		});
 	}
 
 	$(document).ready(function(){
+		
+		let likePoint = ${article.likePoint};
+		
 		$('#doLike').click(function(){
 			$.ajax({
 				url : '/usr/article/doLike', 
@@ -97,17 +106,19 @@
 				},
 				dataType : 'text', 
 				success : function() {
+					likePoint = likePoint + 1;
 					$('#doLike').css('display', 'none');
 					$('#undoLike').css('display', 'inline-block');
+					$('.likePoint').each(function(index, item){
+						$(item).text(likePoint)
+					});
 				},
 				error : function(xhr, status, error) {
 					console.log(error);
 				},
 			})
 		})
-	})
-	
-	$(document).ready(function(){
+		
 		$('#undoLike').click(function(){
 			$.ajax({
 				url : '/usr/article/undoLike', 
@@ -118,8 +129,12 @@
 				},
 				dataType : 'text', 
 				success : function() { 
+					likePoint = likePoint - 1;
 					$('#undoLike').css('display', 'none');
 					$('#doLike').css('display', 'inline-block');
+					$('.likePoint').each(function(index, item){
+						$(item).text(likePoint)
+					});
 				},
 				error : function(xhr, status, error) {
 					console.log(error);
@@ -127,7 +142,7 @@
 			})
 		})
 	})
-
+	
 </script>
 
 <%@ include file="../../common/foot.jsp"%>

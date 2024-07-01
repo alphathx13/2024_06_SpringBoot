@@ -8,7 +8,7 @@
 
 <section class="mt-8 text-lg">
 	<div class="container mx-auto px-3">
-		<form action="doJoin" method="POST" onsubmit="check(this); return false;">
+		<form action="doJoin" method="POST" enctype="multipart/form-data" onsubmit="check(this); return false;">
 			<label class="input input-bordered flex items-center gap-2">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
 					fill="currentColor" class="h-4 w-4 opacity-70">
@@ -37,9 +37,6 @@
 			</label>
 			<label class="mt-1 input input-bordered flex items-center gap-2">
 	  			<input maxlength="30" type="text" class="grow" placeholder="이메일" name="email"/> 
-			</label>
-			<label class="mt-1 input input-bordered flex items-center gap-2">
-	  			<input maxlength="30" type="text" class="grow" placeholder="프로필이미지" name="profileImage"/> 
 			</label>
 			<button class="mt-5 btn btn-outline btn-info">회원가입</button>
 		</form>
