@@ -2,13 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<%
-	int cPage = (int) request.getAttribute("cPage");
-	int tPage = (int) request.getAttribute("tPage");
-	int from = (int) request.getAttribute("from");
-	int tempPage = cPage;
-%>    
-    
 <c:set var="pageTitle" value="${boardName} " />    
     
 <%@ include file="../../common/head.jsp" %>      
@@ -40,42 +33,60 @@
 						</select>
 					</form>
 				</div>
-			</div>	
-			<div class="flex justify-center">
-				<table class = "w-full text-center">
+			</div>
+			
+			<div class="flex">
+				<table class="table">
 					<colgroup>
-						<col class = "w-1/6"/>
-						<col class = "w-2/6"/>
-						<col class = "w-1/6"/>
-						<col class = "w-2/6"/>
+						<col width="100"/>
+						<col width=""/>
+						<col width="80"/>
+						<col width="200"/>
+						<col width="60"/>
 					</colgroup>
-					<thead>
-						<tr class = "border-collapse border-2 bg-orange-300">
-							<th>글 번호</th>
-							<th>글 제목</th>
-							<th>작성자</th>
-							<th>작성일</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="article" items="${articles }">
-							<tr class = "border-collapse border-2 bg-orange-200">
-								<td>${article.id } </td>
-								<td class="hover:underline"><a href="detail?id=${article.id }">${article.title } </a></td>
-								<td>${article.writerName }</td>
-								<td>${article.regDate.substring(2, 16) }</td>
-							</tr>
-						</c:forEach>
-					</tbody>
+				    <thead>
+			     		<tr>
+			        		<th>글 번호</th>
+			        		<th>글 제목</th>
+					        <th>작성자</th>
+					        <th>작성일시</th>
+					        <th>조회수</th>
+			   			</tr>
+			    	</thead>
+			    	<tbody>
+			    		<c:forEach var="article" items="${articles }">
+			      			<tr>
+						        <td>${article.id } </td>
+						        <td class="hover:underline"><a href="detail?id=${article.id }">${article.title } </a></td>
+						        <td>
+						          <div class="flex items-center gap-3">
+						            <div class="avatar">
+						              <div class="mask mask-squircle h-8 w-8">
+						                <img
+						                  src="https://img.daisyui.com/tailwind-css-component-profile-2@56w.png"
+						                  alt="Avatar Tailwind CSS Component" />
+						              </div>
+						            </div>
+						            <div>
+						              <div class="font-bold">${article.writerName }</div>
+						            </div>
+						          	</div>
+								</td>
+			        			<th>${article.regDate.substring(2, 16) }</th>
+			        			<th>${article.viewCount }</th>
+			      			</tr>
+			   			</c:forEach>  
+			    	</tbody>
 				</table>
 			</div>
+			
 			<div class="mt-4 w-full flex justify-between">
 				<div></div>
 				<div>
 					<form class = "flex" action="" method="get"> 
 						<input type="hidden" name ="boardId" value="${param.boardId }"/>
 						<input type="hidden" name ="itemsInPage" value="${param.itemsInPage }"/>
-						<select class="select select-bordered h-4" name="searchType">
+						<select data-value="${searchType }" class="select select-bordered h-4" name="searchType">
 							<option value="" selected disabled> 검색항목 </option>
 							<option value="1"> 제목 </option>
 							<option value="2"> 내용 </option>
@@ -83,7 +94,7 @@
 						</select>
 						&nbsp;
 						<label class="input input-bordered flex items-center gap-2">
-							<input maxlength="20" type="text" class="grow" name ="searchText" placeholder="Search" />
+							<input maxlength="20" type="text" value="${searchText }" class="grow" name ="searchText" placeholder="Search" />
 							<button>
 							<svg
 							    xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +114,7 @@
 				<c:choose>
 					<c:when test="${rq.loginMemberNumber != 0 }">
 						<div class="tooltip" data-tip="글 작성">
-							<a class="btn btn-outline btn-info mr-4" href="doWrite?boardId=${param.boardId}">
+							<a class="btn btn-outline btn-info mr-4" href="write?boardId=${param.boardId}">
 								<i class="fa-solid fa-pen"></i>
 							</a>
 						</div>
@@ -122,21 +133,25 @@
 			
 				<c:set var="baseUri" value="&boardId=${param.boardId}&itemsInPage=${itemsInPage}&searchType=${param.searchType}&searchText=${param.searchText}"/>
 				
-				<a class="join-item btn btn-sm" href="?cPage=1${baseUri }"> 첫페이지 </a> &nbsp;&nbsp;
-		
-				<c:forEach begin="1" end="${tPage }" var="i">
+				<c:if test="${cPage > 5 and tPage > 9}">
+					<a class="join-item btn btn-sm" href="?cPage=1${baseUri }"> 처음으로 </a> &nbsp;&nbsp;
+				</c:if>
+				<c:forEach begin="${startPage }" end="${endPage }" var="i">
 					<a class="join-item btn btn-sm ${i == cPage? 'btn-active' : ''}"  href="?cPage=${i }${baseUri }"> ${i } </a>
 				</c:forEach>
-		
-				&nbsp;&nbsp;<a class="join-item btn btn-sm" href="?cPage=${tPage }${baseUri }"> 끝페이지</a>&nbsp;&nbsp;
+				<c:if test="${cPage < tPage - 4 and tPage > 9}">
+					&nbsp;&nbsp;<a class="join-item btn btn-sm" href="?cPage=${tPage }${baseUri }"> 끝으로</a>&nbsp;&nbsp;
+				</c:if>
 				
 				<form action="" method="get" onsubmit="pageCheck(this); return false;"> 
 					<input type="hidden" name ="boardId" value="${param.boardId }"/>
 					<input type="hidden" name ="itemsInPage" value="${itemsInPage }"/>
 					<input type="hidden" name ="searchType" value="${searchType }"/>
 					<input type="hidden" name ="searchText" value="${searchText }"/>
-					<input maxlength="10" class="input input-bordered w-full max-w-sm h-6" type="text" style="width:110px; text-align:center" name ="cPage" placeholder="이동할 페이지"/>
-					<button class="join-item btn btn-sm">이동</button>
+					<label class="input input-bordered flex items-center gap-2">
+						<input maxlength="10" type="text" class="input grow" name ="cPage" placeholder="페이지" />
+						<button> 이동 </button>
+					</label>
 				</form>
 			</div>
 		</div>
@@ -162,5 +177,6 @@
 		form.submit();
 	}
 	</script>
+
 	
 <%@ include file="../../common/foot.jsp" %>  

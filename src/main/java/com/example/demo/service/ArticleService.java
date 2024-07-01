@@ -44,12 +44,12 @@ public class ArticleService {
 		return articleDao.forPrintArticle(id);
 	}
 
-	public String findBoard(int boardId) {
-		return articleDao.findBoard(boardId);
-	}
-
 	public int articleCount(int boardId, int searchType, String searchText) {
 		return articleDao.articleCount(boardId, searchType, searchText);
+	}
+
+	public void viewCountPlus(int id) {
+		articleDao.viewCountPlus(id);
 	}
 	
 }

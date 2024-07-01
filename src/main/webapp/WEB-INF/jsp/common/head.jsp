@@ -40,7 +40,7 @@
 		<ul class="flex">
 			<c:choose>
 				<c:when test="${rq.loginMemberNumber == 0 }">
-					<li class="hover:underline p-4">
+					<li class="hover:underline p-4 text-black">
 						<button class="btn text-sky-500" onclick="my_modal_1.showModal()">Login</button>
 						<dialog id="my_modal_1" class="modal">
 					  		<div class="modal-box">
@@ -65,16 +65,16 @@
 								  			<button class="change" type="button"><i class="see fa-solid fa-eye"></i><i class="notSee hidden fa-solid fa-eye-slash"></i></button>
 										</label>
 										<div class="tooltip w-full" data-tip="로그인">
-											<button class="mt-5 w-full text-xl btn btn-outline btn-info">
-												<i class="fa-solid fa-right-to-bracket"></i>
+											<button class="mt-5 w-full text-xl btn btn-outline">
+												<i class="fa-solid fa-right-to-bracket text-black"></i>
 											</button>
 										</div>
 									</form>
 									<div class="mt-4 font-bold text-xs"><a href="#" class = "hover:text-sky-500 font-extrabold">비밀번호를 잊어버리셨나요?</a></div>
-									<div class="mt-4 font-bold text-xs"><a href="#" class = "hover:text-sky-500 font-extrabold">계정이 없으신가요?</a></div>
+									<div class="mt-4 font-bold text-xs"><a href="/usr/member/join" class = "hover:text-sky-500 font-extrabold">계정이 없으신가요?</a></div>
 								</div>
 					      		<form method="dialog">
-					        		<button class="btn text-sky-500">Close</button>
+					        		<button class="btn">Close</button>
 					      		</form>
 					    	</div>
 						</dialog>

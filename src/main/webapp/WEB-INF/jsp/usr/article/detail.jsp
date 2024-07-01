@@ -27,6 +27,10 @@
 					<td class="border-collapse border-2 bg-orange-200">${article.updateDate.substring(2, 16) }</td>
 				</tr>
 				<tr>
+					<th class="border-collapse border-2 bg-orange-300">조회수</th>
+					<td class="border-collapse border-2 bg-orange-200">${article.viewCount }</td>
+				</tr>
+				<tr>
 					<th class="border-collapse border-2 bg-orange-300">글 제목</th>
 					<td class="border-collapse border-2 bg-orange-200">${article.title }</td>
 				</tr>

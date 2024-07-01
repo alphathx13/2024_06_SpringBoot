@@ -84,14 +84,6 @@ public interface ArticleDao {
 	@Select("SELECT last_insert_id()")
 	public int getLastInsertId();
 
-
-	@Select("""
-			SELECT `name` 
-				FROM board
-				WHERE id = #{boardId}
-			""")
-	public String findBoard(int boardId);
-
 	@Select("""
 			<script>
 			SELECT count(id)
@@ -113,4 +105,11 @@ public interface ArticleDao {
 			</script>
 			""")
 	public int articleCount(int boardId, int searchType, String searchText);
+
+	@Update("""
+			update article
+				set viewCount = viewCount+1
+				where id = #{id};
+			""")
+	public void viewCountPlus(int id);
 }

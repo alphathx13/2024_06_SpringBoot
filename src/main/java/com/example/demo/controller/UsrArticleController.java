@@ -8,11 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.WebUtils;
 
 import com.example.demo.service.ArticleService;
 import com.example.demo.util.Util;
 import com.example.demo.vo.Article;
 import com.example.demo.vo.Rq;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class UsrArticleController {
@@ -46,7 +51,6 @@ public class UsrArticleController {
 	public String list(Model model, int boardId, @RequestParam(defaultValue = "0") int searchType, @RequestParam(defaultValue = "") String searchText, @RequestParam(defaultValue = "10") int itemsInPage, @RequestParam(defaultValue = "1") int cPage) {
 		
 		searchText = searchText.trim();
-		
 		int from = ((cPage - 1) * itemsInPage);
 		
 		int articleCount = articleService.articleCount(boardId, searchType, searchText);
@@ -56,14 +60,29 @@ public class UsrArticleController {
 		
 		List<Article> articles = articleService.articleList(from, itemsInPage, boardId, searchType, searchText);
 		
-		String boardName = articleService.findBoard(boardId);
-
+		int startPage;
+		int endPage;
+		
+		if (tPage <= 9) {
+			startPage = 1;
+			endPage = tPage;
+		} else if (cPage < 5) {
+			startPage = 1;
+			endPage = 9;
+		} else if (cPage > tPage-4) {
+			startPage = tPage-8;
+			endPage = tPage;
+		} else {
+			startPage = cPage-4;
+			endPage = cPage+4;
+		}
+		
 		model.addAttribute("articleCount", articleCount);
 		model.addAttribute("articles", articles);
-		model.addAttribute("boardName", boardName);
 		model.addAttribute("cPage", cPage);
 		model.addAttribute("tPage", tPage);
-		model.addAttribute("from", from);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
 		model.addAttribute("itemsInPage", itemsInPage);
 		model.addAttribute("searchText", searchText);
 		model.addAttribute("searchType", searchType);
@@ -72,7 +91,35 @@ public class UsrArticleController {
 	}
 
 	@GetMapping("/usr/article/detail")
-	public String showDetail(Model model, int id) {
+	public String showDetail(HttpServletRequest request, HttpServletResponse response, Model model, int id) {
+
+		boolean isViewed = false;
+		
+//		Cookie[] cookies = request.getCookies();
+//		boolean isViewed = false;
+//
+//		if (cookies != null) {
+//			for (Cookie cookie : cookies) {
+//				if (cookie.getName().equals("viewedArticle_" + id)) {
+//					isViewed = true;
+//					break;
+//				}
+//			}
+//		}
+//		
+//
+//		
+		
+		if (WebUtils.getCookie(request, "viewedArticle_"+ id) != null) {
+			isViewed = true;
+		}
+
+		if (!isViewed) {
+			articleService.viewCountPlus(id);
+			Cookie cookie = new Cookie("viewedArticle_" + id, "true");
+			cookie.setMaxAge(60 * 60 * 24);
+			response.addCookie(cookie);
+		}
 		
 		Article article = articleService.forPrintArticle(id);
 		

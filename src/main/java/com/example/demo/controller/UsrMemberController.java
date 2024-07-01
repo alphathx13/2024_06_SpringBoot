@@ -11,9 +11,6 @@ import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class UsrMemberController {
 
@@ -25,7 +22,12 @@ public class UsrMemberController {
 		this.rq = rq;
 	}
 	
-	@GetMapping("/usr/member/doJoin")
+	@GetMapping("/usr/member/join")
+	public String join() {
+		return "/usr/member/join";
+	}
+	
+	@PostMapping("/usr/member/doJoin")
 	@ResponseBody
 	public ResultData<Member> join(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
 		if (Util.isEmpty(loginId))
