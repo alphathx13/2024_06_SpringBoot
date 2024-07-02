@@ -103,7 +103,7 @@ public class UsrArticleController {
 		if (!isViewed) {
 			articleService.viewCountPlus(id);
 			Cookie cookie = new Cookie("viewedArticle_" + id, "true");
-			cookie.setMaxAge(3600 * 24);
+			cookie.setMaxAge(5);
 			response.addCookie(cookie);
 		}
 		
@@ -156,7 +156,9 @@ public class UsrArticleController {
 		
 		articleService.articleLike(id, memberNumber);
 		
-		return "";
+		int count = articleService.articleLikeCount(id);
+		
+		return count+"";
 	}
 	
 	@GetMapping("/usr/article/undoLike")
@@ -165,7 +167,9 @@ public class UsrArticleController {
 		
 		articleService.articleUndoLike(id, memberNumber);
 		
-		return "";
+		int count = articleService.articleLikeCount(id);
+		
+		return count+"";
 	}
 
 }

@@ -128,21 +128,19 @@
 	
 			form.submit();
 		}
-	
-		let input = document.querySelector(".pw");
-		let change = document.querySelector(".change");
-		let see = document.querySelector(".see");
-		let notSee = document.querySelector(".notSee");
-		change.addEventListener("click", function() {
-			if (input.type == "password") {
-				input.type = "text";
-				see.style.display= "none";
-				notSee.style.display = "block";
+
+		$('.change').click(function() {
+			if ($('.pw').attr('type') == 'password') {
+				$('.pw').attr('type', 'text');
+				$('.see').css('display', 'none');
+				$('.notSee').css('display', 'block');
 			} else {
-				input.type = "password";
-				see.style.display = "block";
-				notSee.style.display = "none";
+				$('.pw').attr('type', 'password');
+				$('.see').css('display', 'block');
+				$('.notSee').css('display', 'none');
 			}
-		});
+		})
+
+		
 	</script>
 	

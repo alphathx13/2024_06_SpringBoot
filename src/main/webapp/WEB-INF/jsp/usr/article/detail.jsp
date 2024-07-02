@@ -41,20 +41,29 @@
 			</table>
 		</div>
 		
-		<c:if test="${rq.loginMemberNumber != 0 }">
-			<div class="h-16">
-				<div id="undoLike" class="tooltip w-16 h-full text-3xl" data-tip="추천 취소">
-					<button class="btn btn-outline btn-info w-full h-full" type="button">
-						<i class="fa-solid fa-star"><div class="likePoint text-xl"></div></i>
-					</button>
-				</div>
-				<div id="doLike" class="tooltip w-16 h-full text-3xl" data-tip="추천">
-					<button class="btn btn-outline btn-info w-full h-full" type="button">
-						<i class="fa-regular fa-star"><div class="likePoint text-xl"></div></i>
-					</button>
-				</div>
-			</div>
-		</c:if>
+		<div class="h-16">
+			<c:choose>
+				<c:when test="${rq.loginMemberNumber != 0 }">
+					<div class="undoLike tooltip w-16 h-full ${articleLikeCheck == 1? 'inline-block' : 'hidden' }" data-tip="추천취소">
+						<button class="btn btn-outline btn-info w-full h-full text-xl" type="button">
+							<i class="fa-solid fa-star"><div class="likePoint text-xl">${article.likePoint }</div></i>
+						</button>
+					</div>
+					<div class="doLike tooltip w-16 h-full ${articleLikeCheck == 0? 'inline-block' : 'hidden' }" data-tip="추천하기">
+						<button class="btn btn-outline btn-info w-full h-full text-xl" type="button">
+							<i class="fa-regular fa-star"><div class="likePoint text-xl">${article.likePoint }</div></i>
+						</button>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="h-16 tooltip w-16 h-full" data-tip="추천수">
+						<button class="btn btn-outline btn-info w-full h-full flex justify-center">
+							<i class="fa-solid fa-star"></i>${article.likePoint }
+						</button>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</div>
 		
 		<div class="text-4xl mt-4">
 			<div class="tooltip" data-tip="뒤로 가기">
@@ -81,22 +90,10 @@
 </section>
 
 <script>
-	window.onload=function(){
-		if (${articleLikeCheck == 1}) {
-			$('#doLike').css('display', 'none');
-		} else {
-			$('#undoLike').css('display', 'none');
-		}
-		$('.likePoint').each(function(index,item){
-			$(item).text("${article.likePoint}")
-		});
-	}
 
 	$(document).ready(function(){
 		
-		let likePoint = ${article.likePoint};
-		
-		$('#doLike').click(function(){
+		$('.doLike').click(function(){
 			$.ajax({
 				url : '/usr/article/doLike', 
 				type : 'GET', 
@@ -105,12 +102,11 @@
 					memberNumber : ${rq.loginMemberNumber}
 				},
 				dataType : 'text', 
-				success : function() {
-					likePoint = likePoint + 1;
-					$('#doLike').css('display', 'none');
-					$('#undoLike').css('display', 'inline-block');
+				success : function(count) {
+					$('.doLike').css('display', 'none');
+					$('.undoLike').css('display', 'inline-block');
 					$('.likePoint').each(function(index, item){
-						$(item).text(likePoint)
+						$(item).text(count)
 					});
 				},
 				error : function(xhr, status, error) {
@@ -119,7 +115,7 @@
 			})
 		})
 		
-		$('#undoLike').click(function(){
+		$('.undoLike').click(function(){
 			$.ajax({
 				url : '/usr/article/undoLike', 
 				type : 'GET', 
@@ -128,12 +124,11 @@
 					memberNumber : ${rq.loginMemberNumber}
 				},
 				dataType : 'text', 
-				success : function() { 
-					likePoint = likePoint - 1;
-					$('#undoLike').css('display', 'none');
-					$('#doLike').css('display', 'inline-block');
+				success : function(count) { 
+					$('.undoLike').css('display', 'none');
+					$('.doLike').css('display', 'inline-block');
 					$('.likePoint').each(function(index, item){
-						$(item).text(likePoint)
+						$(item).text(count)
 					});
 				},
 				error : function(xhr, status, error) {

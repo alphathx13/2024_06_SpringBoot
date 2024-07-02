@@ -63,5 +63,9 @@ public class ArticleService {
 	public void articleUndoLike(int id, int memberNumber) {
 		articleDao.articleUndoLike(id, memberNumber);
 	}
+
+	public int articleLikeCount(int id) {
+		return articleDao.articleLikeCount(id);
+	}
 	
 }

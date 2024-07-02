@@ -30,8 +30,8 @@ public interface ArticleDao {
 				FROM article a
 				INNER JOIN `member` m
 					ON a.memberNumber = m.id
-				LEFT OUTER JOIN (SELECT * FROM likePoint WHERE relTypeCode = 'article') l
-					ON a.id = l.relId
+				LEFT OUTER JOIN likePoint l
+					ON a.id = l.relId AND l.relTypeCode = 'article'
 				WHERE a.boardId = #{boardId}
 				<if test="searchText != ''">
 					<choose>
@@ -54,13 +54,14 @@ public interface ArticleDao {
 	public List<Article> articleList(int from, int itemsInPage, int boardId, int searchType, String searchText);
 	
 	@Select("""
-			SELECT a.*, m.nickname `writerName`, SUM(l.point) `likePoint`
+			SELECT a.*, m.nickname `writerName`, IFNULL(SUM(l.point), 0) `likePoint`
 				FROM article a
 				INNER JOIN `member` m
-				ON a.memberNumber = m.id
-				INNER JOIN likePoint l
-				ON a.id = l.relId 
-				WHERE a.id = #{id} AND l.relTypeCode = 'article';
+					ON a.memberNumber = m.id
+				LEFT OUTER JOIN likePoint l
+					ON a.id = l.relId AND l.relTypeCode = 'article'
+				WHERE a.id = #{id}
+				GROUP BY a.id
 			""")
 	public Article forPrintArticle(int id);
 	
@@ -142,4 +143,12 @@ public interface ArticleDao {
 				and relId = #{id}
 			""")
 	public void articleUndoLike(int id, int memberNumber);
+
+	@Select("""
+			SELECT count(*)
+				FROM likePoint 
+				WHERE relId = #{id} 
+					and relTypeCode = 'article';
+			""")
+	public int articleLikeCount(int id);
 }
