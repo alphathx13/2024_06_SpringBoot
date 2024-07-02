@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.ArticleDao;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.Reply;
 
 @Service
 public class ArticleService {
@@ -50,22 +51,6 @@ public class ArticleService {
 
 	public void viewCountPlus(int id) {
 		articleDao.viewCountPlus(id);
-	}
-
-	public int articleLikeCheck(int loginMemberNumber, int id) {
-		return articleDao.articleLikeCheck(id, loginMemberNumber);
-	}
-
-	public void articleLike(int id, int memberNumber) {
-		articleDao.articleLike(id, memberNumber);
-	}
-
-	public void articleUndoLike(int id, int memberNumber) {
-		articleDao.articleUndoLike(id, memberNumber);
-	}
-
-	public int articleLikeCount(int id) {
-		return articleDao.articleLikeCount(id);
 	}
 	
 }

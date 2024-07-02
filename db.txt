@@ -69,6 +69,18 @@ ALTER TABLE `member` CONVERT TO CHARSET utf8;
 ALTER TABLE board CONVERT TO CHARSET utf8;
 ALTER TABLE likePoint CONVERT TO CHARSET utf8;
 
+## 댓글용 table
+			
+CREATE TABLE reply(
+    id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT
+    , memberNumber INT UNSIGNED NOT NULL
+    , relTypeCode VARCHAR(20) NOT NULL COMMENT '관련 데이터 타입 코드'
+    , relId INT UNSIGNED NOT NULL COMMENT '관련 데이터 번호'
+    , `body` TEXT NOT NULL
+    , regDate DATETIME NOT NULL
+    , updateDate DATETIME NOT NULL
+);
+
 ###################################################################
 
 INSERT INTO article
@@ -189,6 +201,43 @@ INSERT INTO likePoint
         , relTypeCode = 'article'
         , relId = 3;    
 
+# 2번 회원이 1번 글에 댓글				
+INSERT INTO reply
+    SET regDate = NOW()
+        , updateDate = NOW()
+        , memberNumber = 2
+        , relTypeCode = 'article'
+        , relId = 1
+        , `body` = '댓글1';
+
+# 3번 회원이 1번 글에 댓글
+INSERT INTO reply
+    SET regDate = NOW()
+        , updateDate = NOW()
+        , memberNumber = 3
+        , relTypeCode = 'article'
+        , relId = 1
+        , `body` = '댓글2';
+
+# 2번 회원이 3번 글에 댓글
+INSERT INTO reply
+    SET regDate = NOW()
+        , updateDate = NOW()
+        , memberNumber = 2
+        , relTypeCode = 'article'
+        , relId = 3
+        , `body` = '댓글3';
+
+# 3번 회원이 2번 글에 댓글
+INSERT INTO reply
+    SET regDate = NOW()
+        , updateDate = NOW()
+        , memberNumber = 3
+        , relTypeCode = 'article'
+        , relId = 2
+        , `body` = '댓글4';
+
+
 ## 테스트 데이터 생성     
 
 ##################################################
@@ -212,3 +261,7 @@ INSERT INTO likePoint
 # select * from likePoint
 # DESC likePoint;
 # truncate likePoint;
+
+# select * from reply
+# DESC reply;
+# truncate reply;

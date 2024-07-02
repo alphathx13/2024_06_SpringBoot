@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.vo.Article;
+import com.example.demo.vo.Reply;
 
 @Mapper
 public interface ArticleDao {
@@ -118,37 +119,5 @@ public interface ArticleDao {
 				where id = #{id};
 			""")
 	public void viewCountPlus(int id);
-
-	@Select("""
-			SELECT count(*)
-				FROM likePoint 
-				WHERE memberNumber = #{loginMemberNumber} 
-					and relId = #{id} 
-					and relTypeCode = 'article';
-			""")
-	public int articleLikeCheck(int id, int loginMemberNumber);
-
-	@Insert("""
-			insert into likePoint
-			set memberNumber = #{memberNumber}
-				, relTypeCode = 'article'
-				, relId = #{id}
-			""")
-	public void articleLike(int id, int memberNumber);
-
-	@Delete("""
-			DELETE FROM likePoint
-			where memberNumber = #{memberNumber}
-				and relTypeCode = 'article'
-				and relId = #{id}
-			""")
-	public void articleUndoLike(int id, int memberNumber);
-
-	@Select("""
-			SELECT count(*)
-				FROM likePoint 
-				WHERE relId = #{id} 
-					and relTypeCode = 'article';
-			""")
-	public int articleLikeCount(int id);
+	
 }

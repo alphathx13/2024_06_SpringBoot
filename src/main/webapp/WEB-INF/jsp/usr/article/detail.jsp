@@ -42,27 +42,54 @@
 		</div>
 		
 		<div class="h-16">
-			<c:choose>
-				<c:when test="${rq.loginMemberNumber != 0 }">
-					<div class="undoLike tooltip w-16 h-full ${articleLikeCheck == 1? 'inline-block' : 'hidden' }" data-tip="추천취소">
-						<button class="btn btn-outline btn-info w-full h-full text-xl" type="button">
-							<i class="fa-solid fa-star"><div class="likePoint text-xl">${article.likePoint }</div></i>
-						</button>
-					</div>
-					<div class="doLike tooltip w-16 h-full ${articleLikeCheck == 0? 'inline-block' : 'hidden' }" data-tip="추천하기">
-						<button class="btn btn-outline btn-info w-full h-full text-xl" type="button">
-							<i class="fa-regular fa-star"><div class="likePoint text-xl">${article.likePoint }</div></i>
-						</button>
-					</div>
-				</c:when>
-				<c:otherwise>
-					<div class="h-16 tooltip w-16 h-full" data-tip="추천수">
-						<button class="btn btn-outline btn-info w-full h-full flex justify-center">
-							<i class="fa-solid fa-star"></i>${article.likePoint }
-						</button>
-					</div>
-				</c:otherwise>
-			</c:choose>
+			<div class="likeTooltip tooltip w-24 h-full" data-tip="">
+				<button class="likeBtn btn btn-outline btn-info w-full h-full text-xl" type="button">
+					<i class="star"><div class="likePoint text-xl">${article.likePoint }</div></i>
+				</button>
+			</div>
+		</div>	
+		
+		<div class="reply">
+			<table class="table">
+				<colgroup>
+					<col width="30"/>
+					<col width=""/>
+					<col width="200"/>
+				</colgroup>
+			    <thead>
+		     		<tr>
+		        		<th>작성자</th>
+		        		<th>내용</th>
+				        <th>작성일시</th>
+						<th></th>
+		   			</tr>
+		    	</thead>
+		    	<tbody>
+		    		<c:forEach var="reply" items="${replyList }">
+		      			<tr>
+		        			<th>${reply.nickname }</th>
+		        			<th>${reply.body }</th>
+		        			<th class="flex">
+        						${reply.updateDate }
+								<c:if test="${reply.regDate != reply.updateDate}">
+									<div>&nbsp; 수정됨</div>
+								</c:if>       				
+		        			</th>
+		        			<th>
+		        				<c:if test="${reply.memberNumber == rq.loginMemberNumber }">
+		        					<button>
+		        						<i class="fa-solid fa-pen-to-square"></i>
+		        					</button>
+		        				</c:if>
+		        			</th>
+		      			</tr>
+		   			</c:forEach>  
+		    	</tbody>
+			</table>
+		</div>
+		
+		<div class="writeReply mt-5 w-full bg-sky-200 h-40">
+			테스트 영역
 		</div>
 		
 		<div class="text-4xl mt-4">
@@ -92,51 +119,72 @@
 <script>
 
 	$(document).ready(function(){
+		if (${rq.loginMemberNumber == 0 }) {
+			$('.likeTooltip').attr('data-tip', '추천수');
+			$('.star').addClass('fa-solid fa-splotch');
+		} else {
 		
-		$('.doLike').click(function(){
 			$.ajax({
-				url : '/usr/article/doLike', 
-				type : 'GET', 
-				data : { 
-					id : ${article.id},
-					memberNumber : ${rq.loginMemberNumber}
+				url : '../likePoint/likeCheck',
+				type : 'GET',
+				data : {
+					relTypeCode : 'article',
+					relId : ${article.id }
 				},
-				dataType : 'text', 
-				success : function(count) {
-					$('.doLike').css('display', 'none');
-					$('.undoLike').css('display', 'inline-block');
-					$('.likePoint').each(function(index, item){
-						$(item).text(count)
-					});
-				},
-				error : function(xhr, status, error) {
-					console.log(error);
-				},
-			})
-		})
-		
-		$('.undoLike').click(function(){
-			$.ajax({
-				url : '/usr/article/undoLike', 
-				type : 'GET', 
-				data : { 
-					id : ${article.id},
-					memberNumber : ${rq.loginMemberNumber}
-				},
-				dataType : 'text', 
-				success : function(count) { 
-					$('.undoLike').css('display', 'none');
-					$('.doLike').css('display', 'inline-block');
-					$('.likePoint').each(function(index, item){
-						$(item).text(count)
-					});
+				dataType : 'json',
+				success : function(result) {
+					if (result.resultCode == "S-1") {
+						$('.likeBtn').html(`
+								<i class="star fa-solid fa-star"></i>
+								<div class="likePoint">${article.likePoint }</div>
+								`);
+						$('.likeTooltip').attr('data-tip', '추천취소');
+					} else {
+						$('.likeBtn').html(`
+								<i class="star fa-regular fa-star"></i>
+								<div class="likePoint">${article.likePoint }</div>
+								`);
+						$('.likeTooltip').attr('data-tip', '추천하기');
+					}
 				},
 				error : function(xhr, status, error) {
 					console.log(error);
 				}
 			})
-		})
+		}
 	})
+	
+	$('.likeBtn').click(function(){
+
+		let likeCheck = true;
+		if($('.star').hasClass('fa-regular')) {
+			likeCheck = false;
+		}
+
+		$.ajax({
+			url : '../likePoint/doLike',
+			type : 'GET',
+			data : {
+				relTypeCode : 'article',
+				relId : ${article.id },
+				likeCheck : likeCheck
+			},
+			dataType : 'json',
+			success : function(result) {
+				$('.likePoint').text(result.data);
+				if (result.resultCode == 'undoLike') {
+					$('.star').attr('class','star fa-regular fa-star');
+					$('.likeTooltip').attr('data-tip', '추천하기');
+				} else {
+					$('.star').attr('class','star fa-solid fa-star');
+					$('.likeTooltip').attr('data-tip', '추천취소');
+				}
+			},
+			error : function(xhr, status, error) {
+				console.log(error);
+			}
+		})
+	}) 
 	
 </script>
 

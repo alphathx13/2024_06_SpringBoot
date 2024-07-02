@@ -13,6 +13,7 @@ import org.springframework.web.util.WebUtils;
 import com.example.demo.service.ArticleService;
 import com.example.demo.util.Util;
 import com.example.demo.vo.Article;
+import com.example.demo.vo.Reply;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
 
@@ -107,14 +108,6 @@ public class UsrArticleController {
 			response.addCookie(cookie);
 		}
 		
-		int articleLikeCheck = articleService.articleLikeCheck(rq.getLoginMemberNumber(), id);
-		
-		if (articleLikeCheck == 1) {
-			model.addAttribute("articleLikeCheck", 1);
-		} else {
-			model.addAttribute("articleLikeCheck", 0);
-		}
-		
 		Article article = articleService.forPrintArticle(id);
 		
 		model.addAttribute("article", article);
@@ -148,28 +141,6 @@ public class UsrArticleController {
 		articleService.articleDelete(id);
 		
 		return Util.jsReplace(String.format("%d번 게시글을 삭제했습니다.", id), String.format("/usr/article/list?boardId=%d", boardId));
-	}
-	
-	@GetMapping("/usr/article/doLike")
-	@ResponseBody
-	public String doLike(int id, int memberNumber) {
-		
-		articleService.articleLike(id, memberNumber);
-		
-		int count = articleService.articleLikeCount(id);
-		
-		return count+"";
-	}
-	
-	@GetMapping("/usr/article/undoLike")
-	@ResponseBody
-	public String undoLike(int id, int memberNumber) {
-		
-		articleService.articleUndoLike(id, memberNumber);
-		
-		int count = articleService.articleLikeCount(id);
-		
-		return count+"";
 	}
 
 }
