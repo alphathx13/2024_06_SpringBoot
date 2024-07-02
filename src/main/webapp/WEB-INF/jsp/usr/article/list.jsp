@@ -128,10 +128,6 @@
 				</c:choose>
 			</div>
 			
-			<script>
-
-			</script>
-			
 			<div class="mt-4 mb-4 flex justify-center">
 			
 				<c:set var="baseUri" value="&boardId=${param.boardId}&itemsInPage=${itemsInPage}&searchType=${param.searchType}&searchText=${param.searchText}"/>

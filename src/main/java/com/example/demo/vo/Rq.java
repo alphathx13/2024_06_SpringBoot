@@ -52,7 +52,6 @@ public class Rq {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// response를 servlet이 아닌 다른곳에서 사용하려고 하면 예외처리가 필요
 	}
 
 	public void login(Member member) {

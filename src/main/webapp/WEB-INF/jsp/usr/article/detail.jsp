@@ -15,7 +15,7 @@
 					<col width=150/>
 					<col width=150/>
 					<col/>
-					<col width=200/>
+					<col width=220/>
 				</colgroup>
 				<tr>
 					<td colspan="4" class="text-center">${article.title }</td>
@@ -48,49 +48,142 @@
 				</button>
 			</div>
 		</div>	
+			
+		<!--  댓글 리스트 및 수정 -->
+		<script>
+			$(document).ready(function(){
+				replyLoad('article', ${article.id });
+			})
+			
+			const replyLoad = function(relTypeCode, relId) {
+				$.ajax({
+					url : '../reply/viewReply',
+					type : 'POST',
+					data : {
+						relTypeCode : relTypeCode,
+						relId : relId
+					},
+					async: false,
+					dataType : 'json',
+					success : function(result) {
+						$.each(result.data, function(index, item) {
+							let str = '';
+							str += '<tr>';
+							str += '<td>' + item.nickname + '</td><td><div class="'+item.id+'R">';
+							if(item.relTypeCode != 'article') {
+								str += '<i class="fa-solid fa-l"></i> &nbsp;&nbsp;';	
+							}
+							str += item.body + '</div><div class="' + item.id + '"></div></td><td>' + item.updateDate;
+							if(item.regDate != item.updateDate) {
+								str += '&nbsp;&nbsp;(수정됨)';
+							}
+							str += '</td>';
+							if(item.memberNumber == ${rq.loginMemberNumber }) {
+								str += '<td><div class="tooltip" data-tip="댓글 수정"><button onclick="replyModify(' + item.id + ', \'' + item.body + '\')"><i class="fa-solid fa-pen-to-square"></i></button></div></td>';
+							}
+							str += '</tr>';
+							$('.replyList').append(str);
+							replyLoad('reply', item.id);
+						});
+					},
+					error : function(xhr, status, error) {
+						console.log(error);
+					}
+				})
+			}
+			
+			const replyModify = function(id, body) {
+				if(!$('div.' + id).hasClass('replyModifyOpen')) {
+					$('div.' + id + 'R').css('display', 'none');
+					$('div.' + id).css('height', '200px');
+					$('div.' + id).html(`
+							<form class="replyForm" onsubmit="replyForm_onSubmit(this); replySend(this); return false;">
+								<input type="hidden" name="id" value="` + id + `"/>
+								<input type="hidden" name="articleId" value="${article.id }"/>
+								<textarea maxlength=300 class="textarea textarea-bordered textarea-lg w-full" name="body" placeholder="` + body + `"></textarea>
+								<div class="flex justify-end"><button class="btn btn-outline btn-info btn-sm">수정</button></div>
+							</form>
+							`);
+					$('div.' + id).addClass('replyModifyOpen');
+				} else {
+					$('div.' + id + 'R').css('display', 'inline-block');
+					$('div.' + id).attr('style', 'none');
+					$('div.' + id).removeClass('replyModifyOpen');
+					$('div.' + id).html('');
+				}
+			}
+			
+			function replySend(){
+				let data = $(".replyForm").serialize();
+				
+				console.log(data);
+				
+				$.ajax({
+					url : '../reply/replyModify',
+					type : 'POST',
+					data : data,
+					dataType : 'json',
+					success : function(result) {
+						alert('댓글을 수정하였습니다.');
+						location.href='/usr/article/detail?id=${article.id}';
+					},
+					error : function(xhr, status, error) {
+						console.log(error);
+					}
+				})
+				
+			}
+			
+		</script>	
 		
-		<div class="reply">
+		<section class="mt-4 border-2 border-red-200">
 			<table class="table">
 				<colgroup>
 					<col width="30"/>
 					<col width=""/>
-					<col width="200"/>
+					<col width="240"/>
+					<col width="10"/>
 				</colgroup>
 			    <thead>
 		     		<tr>
 		        		<th>작성자</th>
 		        		<th>내용</th>
 				        <th>작성일시</th>
-						<th></th>
 		   			</tr>
 		    	</thead>
-		    	<tbody>
-		    		<c:forEach var="reply" items="${replyList }">
-		      			<tr>
-		        			<th>${reply.nickname }</th>
-		        			<th>${reply.body }</th>
-		        			<th class="flex">
-        						${reply.updateDate }
-								<c:if test="${reply.regDate != reply.updateDate}">
-									<div>&nbsp; 수정됨</div>
-								</c:if>       				
-		        			</th>
-		        			<th>
-		        				<c:if test="${reply.memberNumber == rq.loginMemberNumber }">
-		        					<button>
-		        						<i class="fa-solid fa-pen-to-square"></i>
-		        					</button>
-		        				</c:if>
-		        			</th>
-		      			</tr>
-		   			</c:forEach>  
+		    	<tbody class="replyList">
 		    	</tbody>
 			</table>
-		</div>
+		</section>
 		
-		<div class="writeReply mt-5 w-full bg-sky-200 h-40">
-			테스트 영역
+		<!--  댓글 작성 -->
+		<script>
+			const replyForm_onSubmit = function(form){
+				let body = form.body.value.trim();
+			
+				if (body.length == 0) {
+					alert('비어있는 댓글은 작성할 수 없습니다');
+					form.body.focus();
+					return;
+				}
+				
+				form.submit();
+			}
+		</script>
+		
+		<div class="container mx-auto px-3">
+			
+			<form action="../reply/doWrite" method="post" onsubmit="replyForm_onSubmit(this); return false;">
+				<input type="hidden" name="relTypeCode" value="article"/>
+				<input type="hidden" name="relId" value="${article.id }"/>
+				<div class="mt-4 reply-border p-4 text-left">
+					<div class="mb-2">${rq.loginMemberNn }</div>
+					<textarea maxlength=300 class="textarea textarea-bordered textarea-lg w-full" name="body" placeholder="댓글을 입력하세요."></textarea>
+					<div class="flex justify-end"><button class="btn btn-outline btn-info btn-sm">작성</button></div>
+				</div>
+			</form>
 		</div>
+
 		
 		<div class="text-4xl mt-4">
 			<div class="tooltip" data-tip="뒤로 가기">
@@ -102,7 +195,7 @@
 				<div class="tooltip" data-tip="글 수정">
 				<button class="btn btn-outline btn-info" type="button"
 					onclick="location.href='modify?id=${article.id }'">
-					<i class="fa-solid fa-pen"></i>
+					<i class="fa-solid fa-pen-to-square"></i>
 				</button>
 				</div>
 				<div class="tooltip" data-tip="글 삭제">
@@ -119,6 +212,7 @@
 <script>
 
 	$(document).ready(function(){
+
 		if (${rq.loginMemberNumber == 0 }) {
 			$('.likeTooltip').attr('data-tip', '추천수');
 			$('.star').addClass('fa-solid fa-splotch');
@@ -139,6 +233,10 @@
 								<div class="likePoint">${article.likePoint }</div>
 								`);
 						$('.likeTooltip').attr('data-tip', '추천취소');
+						$('.likeBtn').html(`
+								<i class="star fa-solid fa-star"></i>
+								<div class="likePoint">${article.likePoint }</div>
+								`);
 					} else {
 						$('.likeBtn').html(`
 								<i class="star fa-regular fa-star"></i>
@@ -155,37 +253,63 @@
 	})
 	
 	$('.likeBtn').click(function(){
+		
+		if(${rq.loginMemberNumber != 0}) {
 
-		let likeCheck = true;
-		if($('.star').hasClass('fa-regular')) {
-			likeCheck = false;
-		}
-
-		$.ajax({
-			url : '../likePoint/doLike',
-			type : 'GET',
-			data : {
-				relTypeCode : 'article',
-				relId : ${article.id },
-				likeCheck : likeCheck
-			},
-			dataType : 'json',
-			success : function(result) {
-				$('.likePoint').text(result.data);
-				if (result.resultCode == 'undoLike') {
-					$('.star').attr('class','star fa-regular fa-star');
-					$('.likeTooltip').attr('data-tip', '추천하기');
-				} else {
-					$('.star').attr('class','star fa-solid fa-star');
-					$('.likeTooltip').attr('data-tip', '추천취소');
-				}
-			},
-			error : function(xhr, status, error) {
-				console.log(error);
+			let likeCheck = true;
+			if($('.star').hasClass('fa-regular')) {
+				likeCheck = false;
 			}
-		})
+	
+			$.ajax({
+				url : '../likePoint/doLike',
+				type : 'GET',
+				data : {
+					relTypeCode : 'article',
+					relId : ${article.id },
+					likeCheck : likeCheck
+				},
+				dataType : 'json',
+				success : function(result) {
+					$('.likePoint').text(result.data);
+					if (result.resultCode == 'undoLike') {
+						$('.star').attr('class','star fa-regular fa-star');
+						$('.likeTooltip').attr('data-tip', '추천하기');
+					} else {
+						$('.star').attr('class','star fa-solid fa-star');
+						$('.likeTooltip').attr('data-tip', '추천취소');
+					}
+				},
+				error : function(xhr, status, error) {
+					console.log(error);
+				}
+			})
+		}
 	}) 
 	
+
 </script>
 
 <%@ include file="../../common/foot.jsp"%>
+
+<!-- 
+$.each(result.data, function(index, item) {
+							let str = '';
+							str += '<tr>';
+							str += '<td>' + item.nickname + '</td><td><div class="'+item.id+'">';
+							if(item.relTypeCode != 'article') {
+								str += '<i class="fa-solid fa-l"></i> &nbsp;&nbsp;';	
+							}
+							str += item.body + '</div></td><td>' + item.updateDate;
+							if(item.regDate != item.updateDate) {
+								str += '&nbsp;&nbsp;(수정됨)';
+							}
+							str += '</td>';
+							if(item.memberNumber == ${rq.loginMemberNumber }) {
+								str += '<td><div class="tooltip" data-tip="댓글 수정"><button onclick="replyModify(' + item.id + ')"><i class="fa-solid fa-pen-to-square"></i></button></div></td>';
+							}
+							str += '</tr>';
+							$('.replyList').append(str);
+							replyLoad('reply', item.id);
+						});				
+ -->
