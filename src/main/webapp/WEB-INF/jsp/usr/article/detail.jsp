@@ -6,9 +6,11 @@
 
 <%@ include file="../../common/head.jsp"%>
 
+<!-- 전체 틀 -->
 <section class="mt-8 text-lg text-center">
 	<div class="container flex flex-col mx-auto px-3 w-3/5">
-	
+		
+		<!-- 게시글 내용 -->
 		<div class="flex justify-center">
 			<table class="w-full table table-xl table-pin-rows table-pin-cols text-xl">
 				<colgroup>
@@ -36,20 +38,102 @@
 					</td>
 				</tr>
 				<tr class="h-40">
-					<td colspan="4" class="">${article.body }</td>
+					<td colspan="4" class="">${article.getBody() }</td>
 				</tr>
 			</table>
 		</div>
 		
+		<!-- 추천수 -->
+		<script>
+			$(document).ready(function(){
+		
+				if (${rq.loginMemberNumber == 0 }) {
+					$('.likeTooltip').attr('data-tip', '추천수');
+					$('.star').addClass('fa-solid fa-splotch');
+				} else {
+				
+					$.ajax({
+						url : '../likePoint/likeCheck',
+						type : 'GET',
+						data : {
+							relTypeCode : 'article',
+							relId : ${article.id }
+						},
+						dataType : 'json',
+						success : function(result) {
+							if (result.resultCode == "S-1") {
+								$('.likeBtn').html(`
+										<i class="star fa-solid fa-star"></i>
+										<div class="likePoint">${article.likePoint }</div>
+										`);
+								$('.likeTooltip').attr('data-tip', '추천취소');
+								$('.likeBtn').html(`
+										<i class="star fa-solid fa-star"></i>
+										<div class="likePoint">${article.likePoint }</div>
+										`);
+							} else {
+								$('.likeBtn').html(`
+										<i class="star fa-regular fa-star"></i>
+										<div class="likePoint">${article.likePoint }</div>
+										`);
+								$('.likeTooltip').attr('data-tip', '추천하기');
+							}
+						},
+						error : function(xhr, status, error) {
+							console.log(error);
+						}
+					})
+				}
+			})
+			
+			const likeBtnChange = function() {
+				
+				if(${rq.loginMemberNumber != 0}) {
+		
+					let likeCheck = true;
+					if($('.star').hasClass('fa-regular')) {
+						likeCheck = false;
+					}
+			
+					$.ajax({
+						url : '../likePoint/doLike',
+						type : 'GET',
+						data : {
+							relTypeCode : 'article',
+							relId : ${article.id },
+							likeCheck : likeCheck
+						},
+						dataType : 'json',
+						success : function(result) {
+							$('.likePoint').text(result.data);
+							if (result.resultCode == 'undoLike') {
+								$('.star').attr('class','star fa-regular fa-star');
+								$('.likeTooltip').attr('data-tip', '추천하기');
+							} else {
+								$('.star').attr('class','star fa-solid fa-star');
+								$('.likeTooltip').attr('data-tip', '추천취소');
+							}
+						},
+						error : function(xhr, status, error) {
+							console.log(error);
+						}
+					})
+				}
+			}
+		</script>
+		
 		<div class="h-16">
-			<div class="likeTooltip tooltip w-24 h-full" data-tip="">
-				<button class="likeBtn btn btn-outline btn-info w-full h-full text-xl" type="button">
+			<div class="likeTooltip tooltip w-20 h-full" data-tip="">
+				<button class="likeBtn btn btn-outline w-full h-full text-xl" onclick = "likeBtnChange();" type="button">
 					<i class="star"><div class="likePoint text-xl">${article.likePoint }</div></i>
 				</button>
 			</div>
 		</div>	
 			
-		<!--  댓글 리스트 및 수정 -->
+
+			
+			
+		<!--  댓글 리스트 및 수정 삭제 -->
 		<script>
 			$(document).ready(function(){
 				replyLoad('article', ${article.id });
@@ -66,25 +150,30 @@
 					async: false,
 					dataType : 'json',
 					success : function(result) {
-						$.each(result.data, function(index, item) {
-							let str = '';
-							str += '<tr>';
-							str += '<td>' + item.nickname + '</td><td><div class="'+item.id+'R">';
-							if(item.relTypeCode != 'article') {
-								str += '<i class="fa-solid fa-l"></i> &nbsp;&nbsp;';	
-							}
-							str += item.body + '</div><div class="' + item.id + '"></div></td><td>' + item.updateDate;
-							if(item.regDate != item.updateDate) {
-								str += '&nbsp;&nbsp;(수정됨)';
-							}
-							str += '</td>';
-							if(item.memberNumber == ${rq.loginMemberNumber }) {
-								str += '<td><div class="tooltip" data-tip="댓글 수정"><button onclick="replyModify(' + item.id + ', \'' + item.body + '\')"><i class="fa-solid fa-pen-to-square"></i></button></div></td>';
-							}
-							str += '</tr>';
-							$('.replyList').append(str);
-							replyLoad('reply', item.id);
-						});
+						if (result.data.length != 0) {
+							$('.reply').append('<section class="mt-4 border-2 border-red-200"><table class="table"><colgroup><col width="30"/><col width=""/><col width="180"/><col width="10"/><col width="10"/></colgroup><thead><tr><th>작성자</th><th>내용</th><th>작성일시</th></tr></thead><tbody class="replyList"></tbody></table></section>');
+							$.each(result.data, function(index, item) {
+								let str = '';
+								str += '<tr>';
+								str += '<td>' + item.nickname + '</td><td><div class="'+item.id+'R">';
+								if(item.relTypeCode != 'article') {
+									str += '<i class="fa-solid fa-l"></i> &nbsp;&nbsp;';	
+								}
+								str += item.body + '</div><div class="' + item.id + '"></div></td><td>' + item.updateDate;
+								if(item.regDate != item.updateDate) {
+									str += '&nbsp;&nbsp;(수정됨)';
+								}
+								str += '</td>';
+								if(item.memberNumber == ${rq.loginMemberNumber }) {
+									str += '<td><div class="tooltip" data-tip="댓글 수정"><button onclick="replyModify(' + item.id + ', \'' + item.body + '\')"><i class="fa-solid fa-pen-to-square"></i></button></div></td>';
+									str += '<td><div class="tooltip" data-tip="댓글 삭제"><button onclick="replyDelete(' + item.id + '); return false;"><i class="fa-solid fa-trash-can"></i></button></div></td>';
+								}
+								str += '</tr>';
+								$('.replyList').append(str);
+							});
+						}
+						
+						
 					},
 					error : function(xhr, status, error) {
 						console.log(error);
@@ -94,29 +183,31 @@
 			
 			const replyModify = function(id, body) {
 				if(!$('div.' + id).hasClass('replyModifyOpen')) {
+					replyFormClose('replyModifyOpen');
+					
 					$('div.' + id + 'R').css('display', 'none');
-					$('div.' + id).css('height', '200px');
 					$('div.' + id).html(`
-							<form class="replyForm" onsubmit="replyForm_onSubmit(this); replySend(this); return false;">
-								<input type="hidden" name="id" value="` + id + `"/>
+							<form class="replyForm" onsubmit="replyForm_onSubmit(this); replySend(this);">
+								<input type="hidden" name="id" value="\${id}"/>
 								<input type="hidden" name="articleId" value="${article.id }"/>
-								<textarea maxlength=300 class="textarea textarea-bordered textarea-lg w-full" name="body" placeholder="` + body + `"></textarea>
-								<div class="flex justify-end"><button class="btn btn-outline btn-info btn-sm">수정</button></div>
+								<textarea maxlength=300 class="textarea textarea-bordered textarea-lg w-full" name="body" placeholder="\${body}"></textarea>
+								<div class="flex justify-end"><button class="btn btn-outline btn-sm">댓글 수정</button></div>
 							</form>
 							`);
 					$('div.' + id).addClass('replyModifyOpen');
 				} else {
-					$('div.' + id + 'R').css('display', 'inline-block');
-					$('div.' + id).attr('style', 'none');
-					$('div.' + id).removeClass('replyModifyOpen');
-					$('div.' + id).html('');
+					replyFormClose(id);
 				}
+			}
+			
+			const replyFormClose = function(id) {
+				$('div.' + id).siblings().css('display', 'inline-block');
+				$('div.' + id).html('');
+				$('div.' + id).removeClass('replyModifyOpen');
 			}
 			
 			function replySend(){
 				let data = $(".replyForm").serialize();
-				
-				console.log(data);
 				
 				$.ajax({
 					url : '../reply/replyModify',
@@ -131,30 +222,17 @@
 						console.log(error);
 					}
 				})
-				
+			}
+			
+			const replyDelete = function(id) {
+				if(confirm('정말 삭제하시겠습니까?')) {
+					location.href="/usr/reply/replyDelete?id=" + id + "&articleId=" + ${article.id};
+				}
 			}
 			
 		</script>	
 		
-		<section class="mt-4 border-2 border-red-200">
-			<table class="table">
-				<colgroup>
-					<col width="30"/>
-					<col width=""/>
-					<col width="240"/>
-					<col width="10"/>
-				</colgroup>
-			    <thead>
-		     		<tr>
-		        		<th>작성자</th>
-		        		<th>내용</th>
-				        <th>작성일시</th>
-		   			</tr>
-		    	</thead>
-		    	<tbody class="replyList">
-		    	</tbody>
-			</table>
-		</section>
+		<section class="reply"></section>	
 		
 		<!--  댓글 작성 -->
 		<script>
@@ -164,10 +242,14 @@
 				if (body.length == 0) {
 					alert('비어있는 댓글은 작성할 수 없습니다');
 					form.body.focus();
-					return;
+					return false;
 				}
 				
-				form.submit();
+				if (confirm('작성하시겠습니까?')) {
+					form.submit();
+				}
+				
+				return false;
 			}
 		</script>
 		
@@ -179,7 +261,7 @@
 				<div class="mt-4 reply-border p-4 text-left">
 					<div class="mb-2">${rq.loginMemberNn }</div>
 					<textarea maxlength=300 class="textarea textarea-bordered textarea-lg w-full" name="body" placeholder="댓글을 입력하세요."></textarea>
-					<div class="flex justify-end"><button class="btn btn-outline btn-info btn-sm">작성</button></div>
+					<div class="flex justify-end"><button class="btn btn-outline btn-sm">댓글 작성</button></div>
 				</div>
 			</form>
 		</div>
@@ -209,86 +291,7 @@
 	</div>
 </section>
 
-<script>
 
-	$(document).ready(function(){
-
-		if (${rq.loginMemberNumber == 0 }) {
-			$('.likeTooltip').attr('data-tip', '추천수');
-			$('.star').addClass('fa-solid fa-splotch');
-		} else {
-		
-			$.ajax({
-				url : '../likePoint/likeCheck',
-				type : 'GET',
-				data : {
-					relTypeCode : 'article',
-					relId : ${article.id }
-				},
-				dataType : 'json',
-				success : function(result) {
-					if (result.resultCode == "S-1") {
-						$('.likeBtn').html(`
-								<i class="star fa-solid fa-star"></i>
-								<div class="likePoint">${article.likePoint }</div>
-								`);
-						$('.likeTooltip').attr('data-tip', '추천취소');
-						$('.likeBtn').html(`
-								<i class="star fa-solid fa-star"></i>
-								<div class="likePoint">${article.likePoint }</div>
-								`);
-					} else {
-						$('.likeBtn').html(`
-								<i class="star fa-regular fa-star"></i>
-								<div class="likePoint">${article.likePoint }</div>
-								`);
-						$('.likeTooltip').attr('data-tip', '추천하기');
-					}
-				},
-				error : function(xhr, status, error) {
-					console.log(error);
-				}
-			})
-		}
-	})
-	
-	$('.likeBtn').click(function(){
-		
-		if(${rq.loginMemberNumber != 0}) {
-
-			let likeCheck = true;
-			if($('.star').hasClass('fa-regular')) {
-				likeCheck = false;
-			}
-	
-			$.ajax({
-				url : '../likePoint/doLike',
-				type : 'GET',
-				data : {
-					relTypeCode : 'article',
-					relId : ${article.id },
-					likeCheck : likeCheck
-				},
-				dataType : 'json',
-				success : function(result) {
-					$('.likePoint').text(result.data);
-					if (result.resultCode == 'undoLike') {
-						$('.star').attr('class','star fa-regular fa-star');
-						$('.likeTooltip').attr('data-tip', '추천하기');
-					} else {
-						$('.star').attr('class','star fa-solid fa-star');
-						$('.likeTooltip').attr('data-tip', '추천취소');
-					}
-				},
-				error : function(xhr, status, error) {
-					console.log(error);
-				}
-			})
-		}
-	}) 
-	
-
-</script>
 
 <%@ include file="../../common/foot.jsp"%>
 
@@ -311,5 +314,7 @@ $.each(result.data, function(index, item) {
 							str += '</tr>';
 							$('.replyList').append(str);
 							replyLoad('reply', item.id);
-						});				
+						});		
+						
+								
  -->

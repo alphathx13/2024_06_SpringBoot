@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -39,7 +40,15 @@ public interface ReplyDao {
 	@Update("""
 			UPDATE reply
 				SET body = #{body}
+					, updateDate = NOW()
 				WHERE id = #{id}
 			""")
 	public void replyModify(int id, String body);
+
+	@Delete("""
+			DELETE FROM reply
+				where id = #{id}
+			""")
+
+	public void replyDelete(int id);
 }

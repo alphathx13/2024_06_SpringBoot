@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -47,5 +48,13 @@ public class UsrReplyController {
 		replyService.replyModify(id, body);
 		
 		return "1234";
+	}
+	
+	@GetMapping("/usr/reply/replyDelete")
+	@ResponseBody
+	public String replyDelete(int id, int articleId) {
+		replyService.replyDelete(id);
+		
+		return Util.jsReplace(String.format("댓글을 삭제했습니다"), String.format("../article/detail?id=%d", articleId));
 	}
 }

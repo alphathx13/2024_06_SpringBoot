@@ -26,6 +26,9 @@
 <!-- 공통 CSS -->
 <link rel="stylesheet" href="/resource/common.css" />
 
+<!-- toast UI Editor -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
 <!-- 공통 js -->
 <script src="/resource/common.js" defer="defer"></script>
 

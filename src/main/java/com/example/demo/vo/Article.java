@@ -18,4 +18,8 @@ public class Article {
 	private int boardId;
 	private int viewCount;
 	private int likePoint;
+	
+	public String getBody() {
+		return this.body.replaceAll("\n", "<br />");
+	}
 }

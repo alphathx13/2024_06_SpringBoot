@@ -31,4 +31,8 @@ public class ReplyService {
 	public void replyModify(int id, String body) {
 		replyDao.replyModify(id, body);
 	}
+
+	public void replyDelete(int id) {
+		replyDao.replyDelete(id);
+	}
 }

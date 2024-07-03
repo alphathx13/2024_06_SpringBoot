@@ -16,4 +16,8 @@ public class Reply {
 	private String regDate;
 	private String updateDate;
 	private String nickname;
+	
+	public String getBody() {
+		return this.body.replaceAll("\n", "<br />");
+	}
 }
