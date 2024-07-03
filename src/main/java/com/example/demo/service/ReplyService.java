@@ -35,4 +35,8 @@ public class ReplyService {
 	public void replyDelete(int id) {
 		replyDao.replyDelete(id);
 	}
+
+	public Reply getReplyBody(int id) {
+		return replyDao.getReplyBody(id);
+	}
 }

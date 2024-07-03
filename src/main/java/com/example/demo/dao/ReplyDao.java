@@ -49,6 +49,11 @@ public interface ReplyDao {
 			DELETE FROM reply
 				where id = #{id}
 			""")
-
 	public void replyDelete(int id);
+
+	@Select("""
+			SELECT * FROM reply
+				where id = #{id}
+			""")
+	public Reply getReplyBody(int id);
 }

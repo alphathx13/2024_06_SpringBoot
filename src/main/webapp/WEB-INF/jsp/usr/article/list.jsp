@@ -76,7 +76,7 @@
 								</td>
 			        			<th>${article.regDate.substring(2, 16) }</th>
 			        			<th>${article.viewCount }</th>
-			        			<th>${article.likePoint }</th>
+			        			<th><i class="fa-solid fa-star"></i> ${article.likePoint }</th>
 			      			</tr>
 			   			</c:forEach>  
 			    	</tbody>

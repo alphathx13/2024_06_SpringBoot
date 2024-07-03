@@ -26,10 +26,7 @@
 <!-- 공통 CSS -->
 <link rel="stylesheet" href="/resource/common.css" />
 
-<!-- toast UI Editor -->
-<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-
-<!-- 공통 js -->
+<!-- 공통 javascript -->
 <script src="/resource/common.js" defer="defer"></script>
 
 </head>
@@ -92,6 +89,7 @@
 						</div>
 						<ul tabindex="0"
 							class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 shadow">
+							<li><div> ${rq.loginMemberNn } </div></li>
 							<li><button class="h-full flex items-center" onclick="location.href='/usr/member/config'"> Setting </button></li>
 							<li><button class="h-full flex items-center" onclick="if(confirm('로그아웃 하시겠습니까?') == false) return false; location.href='/usr/member/doLogout'">Logout</button></li>
 						</ul>

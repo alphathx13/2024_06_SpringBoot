@@ -22,7 +22,7 @@
 				<tr>
 					<td colspan="4" class="text-center">${article.title }</td>
 				</tr>
-				<tr class="text-base">
+				<tr>
 					<td class="">${article.writerName }</td>
 					<td class=""><i class="fa-solid fa-eye"></i> ${article.viewCount }</td>
 					<td class="grow"></td>
@@ -131,7 +131,7 @@
 		</div>	
 			
 			
-		<!--  댓글 조회 / 수정 / 삭제 / 조회 -->
+		<!--  댓글 조회 및 수정 삭제 -->
 		<script>
 			$(document).ready(function(){
 				replyLoad('article', ${article.id });
@@ -159,7 +159,7 @@
 												<colgroup>
 													<col width="30"/>
 													<col width=""/>
-													<col width="200"/>
+													<col width="210"/>
 													<col width="10"/>
 													<col width="10"/>
 												</colgroup>
@@ -180,7 +180,6 @@
 									`);
 						
 							$.each(result.data, function(index, item) {
-								let date = item.updateDate.substr(5);
 								content += `
 										<tr>
 											<td>\${item.nickname}</td>
@@ -188,7 +187,7 @@
 												<div class="\${item.id}R">\${item.body}	</div>
 												<div class="\${item.id}"></div>
 											</td>
-											<td>\${date}
+											<td>\${item.updateDate}
 										`;
 								if (item.regDate != item.updateDate) {
 									content += `(수정됨)`;
@@ -276,6 +275,12 @@
 				}
 			}
 			
+		</script>	
+		
+		<section class="reply mt-8 text-lg"></section>	
+		
+		<!--  댓글 작성 -->
+		<script>
 			const replyForm_onSubmit = function(form){
 				let body = form.body.value.trim();
 			
@@ -287,25 +292,22 @@
 				
 				return true;
 			}
-			
-		</script>	
+		</script>
 		
-		<section class="reply mt-8 text-lg"></section>	
-		
-		<c:if test="${loginMemberNumber == article.memberNumber }">
-			<div class="container mx-auto px-3">
-				<form action="../reply/doWrite" method="post" onsubmit="if(replyForm_onSubmit(this)) { if(confirm('댓글을 작성하시겠습니까?')) form.submit();} return false;">
-					<input type="hidden" name="relTypeCode" value="article"/>
-					<input type="hidden" name="relId" value="${article.id }"/>
-					<div class="mt-4 reply-border p-4 text-left">
-						<div class="mb-2">${rq.loginMemberNn }</div>
-						<textarea maxlength=300 class="textarea textarea-bordered textarea-lg w-full" name="body" placeholder="댓글을 입력하세요."></textarea>
-						<div class="flex justify-end"><button class="btn btn-outline btn-sm">댓글 작성</button></div>
-					</div>
-				</form>
-			</div>
-		</c:if>
+		<div class="container mx-auto px-3">
 			
+			<form action="../reply/doWrite" method="post" onsubmit="if(replyForm_onSubmit(this)) { if(confirm('댓글을 작성하시겠습니까?')) form.submit();} return false;">
+				<input type="hidden" name="relTypeCode" value="article"/>
+				<input type="hidden" name="relId" value="${article.id }"/>
+				<div class="mt-4 reply-border p-4 text-left">
+					<div class="mb-2">${rq.loginMemberNn }</div>
+					<textarea maxlength=300 class="textarea textarea-bordered textarea-lg w-full" name="body" placeholder="댓글을 입력하세요."></textarea>
+					<div class="flex justify-end"><button class="btn btn-outline btn-sm">댓글 작성</button></div>
+				</div>
+			</form>
+		</div>
+
+		
 		<div class="text-4xl mt-4">
 			<div class="tooltip" data-tip="뒤로 가기">
 				<button class="btn btn-outline btn-info" onclick="history.back();">			
@@ -330,4 +332,31 @@
 	</div>
 </section>
 
+
+
 <%@ include file="../../common/foot.jsp"%>
+
+<!-- 
+$('.reply').append('<section class="mt-4 border-2 border-red-200"><table class="table"><colgroup><col width="30"/><col width=""/><col width="210"/><col width="10"/><col width="10"/></colgroup><thead><tr><th>작성자</th><th>내용</th><th>작성일시</th></tr></thead><tbody class="replyList"></tbody></table></section>');
+							$.each(result.data, function(index, item) {
+								console.log(item);
+								let str = '';
+								str += '<tr>';
+								str += '<td>' + item.nickname + '</td><td><div class="'+item.id+'R">';
+								if(item.relTypeCode != 'article') {
+									str += '<i class="fa-solid fa-l"></i> &nbsp;&nbsp;';	
+								}
+								str += item.body + '</div><div class="' + item.id + '"></div></td><td>' + item.updateDate;
+								if(item.regDate != item.updateDate) {
+									str += '&nbsp;&nbsp;(수정됨)';
+								}
+								str += '</td>';
+								if(item.memberNumber == ${rq.loginMemberNumber }) {
+									str += '<td><div class="tooltip" data-tip="댓글 수정"><button onclick="replyModify(' + item.id + ', \'' + item.body + '\')"><i class="fa-solid fa-pen-to-square"></i></button></div></td>';
+									str += '<td><div class="tooltip" data-tip="댓글 삭제"><button onclick="replyDelete(' + item.id + '); return false;"><i class="fa-solid fa-trash-can"></i></button></div></td>';
+								}
+								str += '</tr>';
+								$('.replyList').append(str);
+							});						
+								
+ -->

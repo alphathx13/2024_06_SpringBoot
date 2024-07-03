@@ -17,7 +17,7 @@ public class Reply {
 	private String updateDate;
 	private String nickname;
 	
-	public String getBody() {
-		return this.body.replaceAll("\n", "<br />");
-	}
+//	public String getBody() {
+//		return this.body.replaceAll("\n", "<br />");
+//	}
 }

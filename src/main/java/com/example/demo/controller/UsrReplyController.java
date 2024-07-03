@@ -57,4 +57,13 @@ public class UsrReplyController {
 		
 		return Util.jsReplace(String.format("댓글을 삭제했습니다"), String.format("../article/detail?id=%d", articleId));
 	}
+	
+	@PostMapping("/usr/reply/getReplyBody")
+	@ResponseBody
+	public String getReplyBody(int id) {
+		
+		Reply reply = replyService.getReplyBody(id);
+		
+		return reply.getBody();
+	}
 }
