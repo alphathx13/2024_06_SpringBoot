@@ -5,43 +5,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>${pageTitle }</title>
-
-<!-- tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- daisyUI -->
-<link
-	href="https://cdn.jsdelivr.net/npm/daisyui@4.12.8/dist/full.min.css"
-	rel="stylesheet" type="text/css" />
-
-<!-- jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-<!-- font awesome -->
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<!-- 공통 CSS -->
-<link rel="stylesheet" href="/resource/common.css" />
-
-<!-- 공통 javascript -->
-<script src="/resource/common.js" defer="defer"></script>
+	<meta charset="UTF-8">
+	<title>${pageTitle }</title>
+	<link rel="shortcut icon" href="/resource/favicon/favicon.ico" />
+	
+	<!-- tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com"></script>
+	
+	<!-- daisyUI -->
+	<link
+		href="https://cdn.jsdelivr.net/npm/daisyui@4.12.8/dist/full.min.css"
+		rel="stylesheet" type="text/css" />
+	
+	<!-- jQuery -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	
+	<!-- font awesome -->
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+	
+	<!-- 공통 CSS -->
+	<link rel="stylesheet" href="/resource/common.css" />
+	
+	<!-- 공통 javascript -->
+	<script src="/resource/common.js" defer="defer"></script>
 
 </head>
 <body>
 	<div class="h-20 flex container mx-auto text-3xl text-sky-500">
 		<div class="logo text-6xl">
-			<a href="#" class="h-full flex items-center"><i
-				class="fa-solid fa-cloud"></i></a>
+			<a href="#" class="h-full flex items-center"><i class="fa-solid fa-cloud"></i></a>
 		</div>
 		<div class="grow"></div>
 		<ul class="flex">
 			<c:choose>
 				<c:when test="${rq.loginMemberNumber == 0 }">
 					<li class="hover:underline p-4 text-black">
-						<button class="btn text-sky-500" onclick="my_modal_1.showModal()">Login</button>
+						<button class="btn text-sky-500" onclick="my_modal_1.showModal()">로그인</button>
 						<dialog id="my_modal_1" class="modal">
 					  		<div class="modal-box">
 					    		<h3 class="text-lg font-bold">Login</h3>
@@ -83,21 +83,21 @@
 				<c:otherwise>
 					<div class="mt-6 dropdown dropdown-end">
 						<div tabindex="0" role="button">
-							<div class="w-10 rounded-full">
-            					<i class="fa-solid fa-user"></i>
+							<div class="w-10 rounded-full flex">
+            					<i class="fa-solid fa-user"></i><div class="text-xl ml-2">${rq.loginMemberNn }</div>
         					</div>
 						</div>
 						<ul tabindex="0"
-							class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 shadow">
-							<li><div> ${rq.loginMemberNn } </div></li>
-							<li><button class="h-full flex items-center" onclick="location.href='/usr/member/config'"> Setting </button></li>
-							<li><button class="h-full flex items-center" onclick="if(confirm('로그아웃 하시겠습니까?') == false) return false; location.href='/usr/member/doLogout'">Logout</button></li>
+							class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 shadow w-24">
+							<li><div>  </div></li>
+							<li><button class="h-full flex items-center" onclick="location.href='/usr/member/myPage'"> 마이 페이지 </button></li>
+							<li><button class="h-full flex items-center" onclick="if(confirm('로그아웃 하시겠습니까?') == false) return false; location.href='/usr/member/doLogout'">로그아웃</button></li>
 						</ul>
 					</div>
 				</c:otherwise>
 			</c:choose>
 
-			<li class="hover:underline p-4"><a
+			<li class="hover:underline p-4 ml-4"><a
 				class="h-full px-3 flex items-center" href="/"><span>HOME</span></a>
 			<li class="hover:underline p-4"><a
 				class="h-full px-3 flex items-center" href="/usr/article/list?boardId=1"><span>NOTICE</span></a>

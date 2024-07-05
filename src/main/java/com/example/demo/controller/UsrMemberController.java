@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,6 +13,9 @@ import com.example.demo.util.Util;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class UsrMemberController {
@@ -88,9 +94,37 @@ public class UsrMemberController {
 		return Util.jsReplace("정상적으로 로그아웃 되었습니다.", "/");
 	}
 	
-	@GetMapping("/usr/member/config")
-	public String config() {
-		return "usr/member/config";
+	@GetMapping("/usr/member/myPage")
+	public String myPage(Model model) {
+		model.addAttribute("member", memberService.getMemberById(rq.getLoginMemberNumber()));
+		return "usr/member/myPage";
 	}
+	
+	@PostMapping("/usr/member/passCheck")
+	public String passCheck(Model model, String pw){
+		boolean passCheck = false;
+		
+		Member member = memberService.passCheck(rq.getLoginMemberNumber(), pw);
+		
+		if (member != null) {
+			passCheck = true;
+		}
+		
+		if (passCheck == true) {
+			model.addAttribute("member", memberService.getMemberById(rq.getLoginMemberNumber()));
+			return "usr/member/config";
+		}
 
+		return "usr/member/passCheckFail";
+	}
+	
+	@PostMapping("/usr/member/change")
+	public String change(Model model, String nickname, String loginPw, String cellphone, String email){
+		
+		memberService.change(rq.getLoginMemberNumber(), loginPw, nickname, cellphone, email);
+		
+		model.addAttribute("member", memberService.getMemberById(rq.getLoginMemberNumber()));
+		return "usr/member/myPage";
+	}
+	
 }

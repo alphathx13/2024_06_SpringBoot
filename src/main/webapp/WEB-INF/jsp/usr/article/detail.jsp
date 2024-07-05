@@ -5,6 +5,13 @@
 <c:set var="pageTitle" value="게시글 보기" />
 
 <%@ include file="../../common/head.jsp"%>
+<%@ include file="../../common/toastUiLib.jsp"%>
+
+<script>
+	$(document).ready(function() {
+		$('.toastui-editor-contents').html('${article.body }');
+	});
+</script>
 
 <!-- 전체 틀 -->
 <section class="mt-8 text-lg text-center">
@@ -38,7 +45,7 @@
 					</td>
 				</tr>
 				<tr class="h-40">
-					<td colspan="4" class="">${article.getBody() }</td>
+					<td colspan="4" class=""><div class="toast-viewer"></div></td>
 				</tr>
 			</table>
 		</div>
@@ -292,7 +299,7 @@
 		
 		<section class="reply mt-8 text-lg"></section>	
 		
-		<c:if test="${loginMemberNumber == article.memberNumber }">
+		<c:if test="${loginMemberNumber != 0 }">
 			<div class="container mx-auto px-3">
 				<form action="../reply/doWrite" method="post" onsubmit="if(replyForm_onSubmit(this)) { if(confirm('댓글을 작성하시겠습니까?')) form.submit();} return false;">
 					<input type="hidden" name="relTypeCode" value="article"/>
