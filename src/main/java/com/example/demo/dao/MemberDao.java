@@ -40,13 +40,6 @@ public interface MemberDao {
 	@Select("SELECT last_insert_id()")
 	public int getLastInsertId();
 
-	@Select("""
-			SELECT * FROM `member`
-				WHERE id = #{memberNumber} and
-					loginPw = #{pw}
-			""")
-	public Member passCheck(int memberNumber, String pw);
-
 	@Update("""
 			UPDATE `member`
 				SET loginPw = #{loginPw}
@@ -57,4 +50,10 @@ public interface MemberDao {
 				WHERE id = #{memberNumber}
 			""")
 	public void change(int memberNumber, String loginPw, String nickname, String cellphone, String email);
+
+	@Select("""
+			SELECT * FROM `member`
+				where loginId = #{loginId}
+			""")
+	public Member idDupCheck(String loginId);
 }

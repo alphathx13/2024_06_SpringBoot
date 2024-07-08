@@ -34,31 +34,10 @@ public class UsrMemberController {
 	}
 	
 	@PostMapping("/usr/member/doJoin")
-	@ResponseBody
-	public ResultData<Member> join(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
-//		if (Util.isEmpty(loginId))
-//			return ResultData.from("F-1", "아이디는 필수입력 정보입니다.");
-//		if (Util.isEmpty(loginPw)) 
-//			return ResultData.from("F-2", "비밀번호는 필수입력 정보입니다.");
-//		if (Util.isEmpty(name)) 
-//			return ResultData.from("F-3", "이름은 필수입력 정보입니다.");
-//		if (Util.isEmpty(nickname)) 
-//			return ResultData.from("F-4", "닉네임은 필수입력 정보입니다.");
-//		if (Util.isEmpty(cellphone)) 
-//			return ResultData.from("F-5", "핸드폰 번호는 필수입력 정보입니다.");
-//		if (Util.isEmpty(email)) 
-//			return ResultData.from("F-6", "이메일은 필수입력 정보입니다.");
-		
-		Member member = memberService.getMemberByLoginId(loginId);
-		
-		if (member != null) 
-			return ResultData.from("F-7", String.format("입력하신 [ %s ] 아이디는 이미 사용중입니다.", loginId));
-		
+	public String join(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
 		memberService.memberJoin(loginId, loginPw, name, nickname, cellphone, email);
 
-		int id = memberService.getLastInsertId();
-		
-		return ResultData.from("S-1", String.format("회원가입을 환영합니다."), memberService.getMemberById(id));
+		return "usr/home/main";
 	}
 
 	@GetMapping("/usr/member/login")
@@ -94,37 +73,39 @@ public class UsrMemberController {
 		return Util.jsReplace("정상적으로 로그아웃 되었습니다.", "/");
 	}
 	
+	@PostMapping("/usr/member/passCheck")
+	public String passCheck(Model model) {
+		model.addAttribute("member", memberService.getMemberById(rq.getLoginMemberNumber()));
+		return "usr/member/config";
+	}
+
 	@GetMapping("/usr/member/myPage")
 	public String myPage(Model model) {
 		model.addAttribute("member", memberService.getMemberById(rq.getLoginMemberNumber()));
 		return "usr/member/myPage";
 	}
 	
-	@PostMapping("/usr/member/passCheck")
-	public String passCheck(Model model, String pw){
-		boolean passCheck = false;
-		
-		Member member = memberService.passCheck(rq.getLoginMemberNumber(), pw);
-		
-		if (member != null) {
-			passCheck = true;
-		}
-		
-		if (passCheck == true) {
-			model.addAttribute("member", memberService.getMemberById(rq.getLoginMemberNumber()));
-			return "usr/member/config";
-		}
-
-		return "usr/member/passCheckFail";
-	}
 	
-	@PostMapping("/usr/member/change")
-	public String change(Model model, String nickname, String loginPw, String cellphone, String email){
+	@PostMapping("/usr/member/memberModify")
+	public String memberModify(Model model, String nickname, String loginPw, String cellphone, String email){
 		
 		memberService.change(rq.getLoginMemberNumber(), loginPw, nickname, cellphone, email);
 		
 		model.addAttribute("member", memberService.getMemberById(rq.getLoginMemberNumber()));
 		return "usr/member/myPage";
+	}
+
+	@GetMapping("/usr/member/idDupCheck")
+	@ResponseBody
+	public ResultData<Boolean> idDupCheck(String loginId){
+		
+		Member member = memberService.idDupCheck(loginId);
+		
+		if (member != null) {
+			return ResultData.from("F-1", String.format("입력하신 [%s] 아이디는 이미 사용중인 아이디입니다.", loginId), true);
+		}
+		
+		return ResultData.from("S-1", String.format("입력하신 [%s] 아이디는 사용하실 수 있습니다.", loginId), false);
 	}
 	
 }

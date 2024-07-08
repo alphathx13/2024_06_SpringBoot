@@ -30,12 +30,12 @@ public class MemberService {
 		return memberDao.getLastInsertId();
 	}
 
-	public Member passCheck(int memberNumber, String pw) {
-		return memberDao.passCheck(memberNumber, pw);
-	}
-
 	public void change(int memberNumber, String loginPw, String nickname, String cellphone, String email) {
 		memberDao.change(memberNumber, loginPw, nickname, cellphone, email);
+	}
+
+	public Member idDupCheck(String loginId) {
+		return memberDao.idDupCheck(loginId);
 	}
 
 }

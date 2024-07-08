@@ -14,12 +14,15 @@
 	
 	$(function(){
 	  $('.toast-ui-editor').each(function(index, item) {
-	    const items = $(item);
+		const items = $(item);
+		const initialValueEl = items.find(' > script');
+		const initialValue = initialValueEl.length == 0 ? '' : initialValueEl.html().trim();
 	    
 	    const editor = new Editor({
 	      el: item,
 	      height: '600px',
 	      initialEditType: 'markdown',
+	      initialValue: initialValue,
 	      previewStyle: 'tab',
 	      plugins: [colorSyntax]
 	    });
@@ -30,6 +33,7 @@
 	
 	function check(form){
 		const title = form.title.value.trim();
+		const body = form.body.value.trim();
 		const editorData = $(form).find('.toast-ui-editor').data('data-toast-editor');
 		const markdown = editorData.getMarkdown().trim();
 	
@@ -49,22 +53,5 @@
 		
 		form.submit();
 	}
-	
-	$(function(){
-		$('.toast-viewer').each(function(index, item) {
-		    const items = $(item);
-		    const initialValueEl = items.find(' > script');
-		    const initialValue = initialValueEl.length == 0 ? '' : initialValueEl.html().trim();
-		    
-		    const viewer = new toastui.Editor.factory({
-				el: item,
-				viewer: true,
-				initialValue: initialValue,
-				plugins: [colorSyntax]
-			});
-		
-		    items.data('data-toast-editor', viewer);
-		});
-	});
 
 </script>

@@ -7,12 +7,6 @@
 <%@ include file="../../common/head.jsp"%>
 <%@ include file="../../common/toastUiLib.jsp"%>
 
-<script>
-	$(document).ready(function() {
-		$('.toastui-editor-contents').html('${article.body }');
-	});
-</script>
-
 <!-- 전체 틀 -->
 <section class="mt-8 text-lg text-center">
 	<div class="container flex flex-col mx-auto px-3 w-3/5">
@@ -45,7 +39,7 @@
 					</td>
 				</tr>
 				<tr class="h-40">
-					<td colspan="4" class=""><div class="toast-viewer"></div></td>
+					<td colspan="4" class=""> ${article.body }</td>
 				</tr>
 			</table>
 		</div>
