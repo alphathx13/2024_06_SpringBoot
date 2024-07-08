@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.io.IOException;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +11,6 @@ import com.example.demo.util.Util;
 import com.example.demo.vo.Member;
 import com.example.demo.vo.ResultData;
 import com.example.demo.vo.Rq;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class UsrMemberController {
@@ -34,10 +29,11 @@ public class UsrMemberController {
 	}
 	
 	@PostMapping("/usr/member/doJoin")
+	@ResponseBody
 	public String join(String loginId, String loginPw, String name, String nickname, String cellphone, String email) {
 		memberService.memberJoin(loginId, loginPw, name, nickname, cellphone, email);
 
-		return "usr/home/main";
+		return Util.jsReplace("정상적으로 회원가입 되었습니다.", "/usr/home/main");
 	}
 
 	@GetMapping("/usr/member/login")
@@ -99,7 +95,7 @@ public class UsrMemberController {
 	@ResponseBody
 	public ResultData<Boolean> idDupCheck(String loginId){
 		
-		Member member = memberService.idDupCheck(loginId);
+		Member member = memberService.getMemberByLoginId(loginId);
 		
 		if (member != null) {
 			return ResultData.from("F-1", String.format("입력하신 [%s] 아이디는 이미 사용중인 아이디입니다.", loginId), true);

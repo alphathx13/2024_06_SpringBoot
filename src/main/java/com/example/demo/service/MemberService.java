@@ -33,9 +33,4 @@ public class MemberService {
 	public void change(int memberNumber, String loginPw, String nickname, String cellphone, String email) {
 		memberDao.change(memberNumber, loginPw, nickname, cellphone, email);
 	}
-
-	public Member idDupCheck(String loginId) {
-		return memberDao.idDupCheck(loginId);
-	}
-
 }

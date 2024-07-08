@@ -80,50 +80,51 @@
 		if (loginId.length == 0) {
 			alert('아이디는 필수입력 정보입니다.');
 			form.loginId.focus();
-			return false;
+			return;
 		}
 	
 		if (loginPw.length == 0) {
-			alert('암호는 필수입력 정보입니다.');
+			alert('비밀번호는 필수입력 정보입니다.');
 			form.loginPw.focus();
-			return false;
+			return;
 		}
 		
 		if (loginPw != loginPwRe) {
 			alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
 			form.loginPw.value = '';
 			form.loginPwRe.value = '';
-			return false;
+			form.loginPw.focus();
+			return;
 		}
 		
 		if (name.length == 0) {
 			alert('이름은 필수입력 정보입니다.');
 			form.name.focus();
-			return false;
+			return;
 		}
 	
 		if (nickname.length == 0) {
 			alert('닉네임은 필수입력 정보입니다.');
 			form.nickname.focus();
-			return false;
+			return;
 		}
 		
 		if (cellphone.length == 0) {
 			alert('핸드폰번호는 필수입력 정보입니다.');
 			form.cellphone.focus();
-			return false;
+			return;
 		}
 	
 		if (email.length == 0) {
 			alert('이메일은 필수입력 정보입니다.');
 			form.email.focus();
-			return false;
+			return;
 		}
 		
 		if (idDupCheck == true) {
 			alert('이미 사용중인 아이디입니다.');
 			form.loginId.focus();
-			return false;
+			return;
 		}
 	
 		form.submit();
@@ -142,11 +143,12 @@
 	})
 	
 	$('#loginId').change(function() {
+		
 		$.ajax({
 			url : 'idDupCheck',
 			type : 'GET',
 			data : {
-				loginId : $('[name=joinForm] #loginId').val()  
+				loginId : $('[name=joinForm] #loginId').val().trim()  
 			},
 			dataType : 'json',
 			success : function(result) {

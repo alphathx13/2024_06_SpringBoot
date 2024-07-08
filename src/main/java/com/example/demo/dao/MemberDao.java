@@ -33,7 +33,7 @@ public interface MemberDao {
 	@Select("""
 			select * 
 				from `member` 
-				where loginId = #{id}
+				where loginId = #{loginId}
 			""")
 	public Member getMemberByLoginId(String loginId);
 
@@ -50,10 +50,4 @@ public interface MemberDao {
 				WHERE id = #{memberNumber}
 			""")
 	public void change(int memberNumber, String loginPw, String nickname, String cellphone, String email);
-
-	@Select("""
-			SELECT * FROM `member`
-				where loginId = #{loginId}
-			""")
-	public Member idDupCheck(String loginId);
 }
